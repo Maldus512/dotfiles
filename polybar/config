@@ -1,0 +1,99 @@
+[colors]
+green=#20C20E
+
+
+[bar/main]
+modules-right=date
+modules-left=cpu memory filesystem wired-network wireless-network
+modules-center=windows
+line-size=2
+
+font-0 = UbuntuMono-Regular:size=12;2
+font-1 = FontAwesome:size=12;2
+override-redirect=true
+tray-position=right
+offset-x=2
+offset-y=2
+width=100%:-4
+height=24
+border-size=2
+border-color=#6c0189
+background=#80000000
+foreground=${colors.green}
+pseudo-transparency=true
+module-margin=2
+padding=1
+
+
+[module/date]
+type=internal/date
+date = %d/%m/%Y
+time = %H:%M:%S
+label = %time% %date%
+
+
+[module/cpu]
+width=25%
+type=internal/cpu
+format = <label> <ramp-load>
+ramp-load-font=2
+label = CPU %percentage:3%%
+ramp-load-0 = ▁
+ramp-load-1 = ▂
+ramp-load-2 = ▃
+ramp-load-3 = ▄
+ramp-load-4 = ▅
+ramp-load-5 = ▆
+ramp-load-6 = ▇
+ramp-load-7 = █
+
+
+
+[module/memory]
+type=internal/memory
+format = <label> <ramp-used>
+label = RAM %percentage_used:3%%
+ramp-used-font = 2
+ramp-used-0 = ▁
+ramp-used-1 = ▂
+ramp-used-2 = ▃
+ramp-used-3 = ▄
+ramp-used-4 = ▅
+ramp-used-5 = ▆
+ramp-used-6 = ▇
+ramp-used-7 = █
+
+
+[module/filesystem]
+type=internal/fs
+mount-0=/
+format-mounted = <label-mounted> <ramp-capacity>
+label-mounted = %mountpoint% %percentage_used%%
+ramp-capacity-font = 2
+ramp-capacity-7 = ▁
+ramp-capacity-6 = ▂
+ramp-capacity-5 = ▃
+ramp-capacity-4 = ▄
+ramp-capacity-3 = ▅
+ramp-capacity-2 = ▆
+ramp-capacity-1 = ▇
+ramp-capacity-0 = █
+
+
+[module/wired-network]
+type = internal/network
+interface = eth0
+label-connected = %ifname% %downspeed:9%
+
+[module/wireless-network]
+type = internal/network
+interface = wlan0
+label-connected = %essid% %downspeed:9%
+
+[module/windows]
+type = custom/script
+tail = true
+exec = python -u $HOME/Local/bin/ratpoison_windows_list.py
+format = <label>
+label = %output%
+format-underline = ${colors.green}

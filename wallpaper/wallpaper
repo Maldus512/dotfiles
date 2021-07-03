@@ -1,0 +1,141 @@
+#!/usr/bin/env python
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+from PIL import ImageOps
+from PIL import ImageColor
+
+import random
+import argparse
+import os
+
+
+DEFAULT_DIR = os.path.join(os.environ['HOME'], "Local", "share")
+
+themes = {"depression": {"text": (147, 161, 161),
+                         "background": (20, 20, 60)}}
+
+
+def get_random_text():
+    assets = os.path.join(DEFAULT_DIR, "assets", "quotes.txt")
+    lines = open(assets).read().splitlines()
+    return random.choice(lines)
+
+
+def get_random_theme():
+    key = random.choice(list(themes.keys()))
+    return themes[key]
+
+
+def text_draw(draw, text, pixel, ress, theme, font=None):
+    text = text.split("\\n")
+    result = []
+    linelen = 45
+    for line in text:
+        previous = 0
+        i = linelen
+        index = 0
+        while i < len(line):
+            index = line.find(' ', i)
+            if index > 0:
+                pezzo = line[previous:index]
+                result.append(pezzo)
+                previous = index
+                i = index
+                i += len(pezzo)
+            else:
+                index = previous
+                break
+
+        result.append(line[index:])
+
+    text = result
+
+    W, H = ress
+    for i, line in enumerate(text):
+        if font:
+            loaded_font = ImageFont.truetype(font, pixel)
+        else:
+            loaded_font = ImageFont.load_default()
+
+        w, h = loaded_font.getsize(line)
+        draw.text(((W-w)/2-16, (H-h*len(text)/2)/2+h*i+64),
+                  line, theme["text"], font=loaded_font)
+
+
+def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=None):
+    # img = Image.open(backdrop)
+    img = Image.new("RGB", resolution, theme["background"])
+    W, H = img.size
+
+    assets = os.path.join(DEFAULT_DIR, "assets")
+    images = [f for f in os.listdir(assets) if os.path.isfile(
+        os.path.join(assets, f)) and ".png" in f]
+
+    logofile = random.choice(images)
+    logo = Image.open(os.path.join(assets, logofile))
+    colorized_img = ImageOps.colorize(logo.convert(
+        "L"), theme["text"], theme["background"])
+    size = int((W/100)*16)
+    logo_newsize = colorized_img.resize((size, size), Image.ANTIALIAS)
+    img.paste(logo_newsize, (int((W-size)/2), int((H)/2-size)))
+
+    draw = ImageDraw.Draw(img)
+
+    base_font_pixle = int((56/1920)*resolution[0])
+
+    text_draw(draw, text, base_font_pixle, img.size, theme, font)
+
+    img.save(output, quality=100)
+    with open("/tmp/wallpaperlogo.txt", 'w') as f:
+        f.write(logofile)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Generate random Arch wallpaper')
+    parser.add_argument(
+        '-o', '--output', help='Output file name', required=True)
+    parser.add_argument('-t', '--theme', default=get_random_theme(),
+                        help='The theme to use, else random. \'black\' or \'solarized\'', required=False)
+    parser.add_argument('--text', default=get_random_text(),
+                        help='Text on the picture, or random', required=False)
+    parser.add_argument('--font', help="Font", required=False)
+    parser.add_argument('-r', '--resolution', default=(1920, 1080),
+                        help='Sets the resolution of the image. Example: 1920x1080', required=False)
+    parser.add_argument('-fg', '--foreground-color', type=str,
+                        help='Color for the text and the logo.', required=False)
+    parser.add_argument('-bg', '--background-color', type=str,
+                        help='Color for the background.', required=False)
+    args = vars(parser.parse_args())
+
+    output = args["output"]
+
+    if isinstance(args["theme"], str):
+        args["theme"] = themes[args["theme"]]
+
+    if isinstance(args["resolution"], str):
+        x, y = args["resolution"].split("x")
+        args["resolution"] = (int(x), int(y))
+
+    if args.get("foreground_color"):
+        try:
+            args["theme"]["text"] = ImageColor.getrgb(args["foreground_color"])
+        except:
+            pass
+
+    if args.get("background_color"):
+        try:
+            args["theme"]["background"] = ImageColor.getrgb(
+                args["background_color"])
+        except:
+            pass
+
+    generate_img(output=output, theme=args["theme"],
+                 text=args["text"], resolution=args["resolution"], font=args["font"])
+
+
+if __name__ == '__main__':
+    if os.environ.get('DESKTOP_SESSION') == 'gnome':
+        exit()
+    main()

@@ -1,0 +1,73 @@
+unmanage polybar-main_HDMI-1
+unmanage conky (deku)
+exec udiskie
+exec change_wallpaper
+exec polybar main
+exec conky
+exec xcompmgr
+
+addhook switchwin exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook switchframe exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook switchgroup exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook switchscreen exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook deletewindow exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook newwindow exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+addhook titlechanged exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+
+set padding 4 32 4 4
+set border 1
+set onlyborder 0
+set fwcolor purple
+set bwcolor gray
+set winfmt "%n#%s#%t"
+
+escape Super_L
+startup_message off
+bind i exec ratpoison_toggle_conky.py
+bind s-Return exec rofi -show run -theme purple
+bind M-s-Return exec rofi -show drun -theme purple
+bind S-s-Return exec rofi -show file-browser -theme purple
+bind s-t exec st
+bind q delete
+bind Q delete
+bind M-Tab exec rofi -modi dswitch:"rofi_ratpoison.py --desktops" -show dswitch -theme purple
+bind Tab exec rofi -modi wswitch:"rofi_ratpoison.py --windows" -show wswitch -theme purple
+bind S exec rofi -modi wswitch:"rofi_ratpoison.py --send-to-desktop" -show wswitch -theme purple
+bind minus vsplit
+bind backslash hsplit
+
+bind C exec ratpoison_workspaces.py -c
+bind N exec ratpoison_workspaces.py -n
+
+bind h focusleft
+bind j focusdown
+bind k focusup
+bind l focusright
+
+bind H exchangeleft
+bind J exchangedown
+bind K exchangeup
+bind L exchangeright
+
+bind o only
+
+definekey resize h resizeleft
+definekey resize j resizedown
+definekey resize k resizeup
+definekey resize l resizeright
+
+
+newkmap mouse
+bind m set topkmap mouse
+definekey mouse h ratrelwarp -5 0
+definekey mouse k ratrelwarp 0 -5
+definekey mouse j ratrelwarp 0 5
+definekey mouse l ratrelwarp 5 0
+definekey mouse H ratrelwarp -25 0
+definekey mouse K ratrelwarp 0 -25
+definekey mouse J ratrelwarp 0 25
+definekey mouse L ratrelwarp 25 0
+definekey mouse c ratclick 1
+definekey mouse v ratclick 2
+definekey mouse Escape set topkmap top
+
