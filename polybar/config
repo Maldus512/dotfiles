@@ -1,28 +1,17 @@
 [colors]
 green=#20C20E
 
-
-[bar/main]
+[bar/rpi400]
 modules-right=date
 modules-left=cpu memory filesystem wired-network wireless-network
 modules-center=windows
-line-size=2
+include-file=$HOME/.config/polybar/base_bar.ini
 
-font-0 = UbuntuMono-Regular:size=12;2
-font-1 = FontAwesome:size=12;2
-override-redirect=true
-tray-position=right
-offset-x=2
-offset-y=2
-width=100%:-4
-height=24
-border-size=2
-border-color=#6c0189
-background=#80000000
-foreground=${colors.green}
-pseudo-transparency=true
-module-margin=2
-padding=1
+[bar/pbpro]
+modules-right=battery date
+modules-left=cpu memory filesystem wired-network wireless-network
+modules-center=windows
+include-file=$HOME/.config/polybar/base_bar.ini
 
 
 [module/date]
@@ -30,6 +19,12 @@ type=internal/date
 date = %d/%m/%Y
 time = %H:%M:%S
 label = %time% %date%
+
+
+[module/battery]
+type = custom/script
+exec = pinebook_battery.py
+interval = 5
 
 
 [module/cpu]
