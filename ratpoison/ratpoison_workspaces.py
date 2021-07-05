@@ -2,7 +2,6 @@
 
 import subprocess
 import argparse
-import rofi_menu
 
 
 def rprun(*args):

@@ -1,0 +1,12 @@
+exec [ -z "${rp_volume_step}" ] && ratpoison -c 'setenv rp_volume_step 2%' || true
+exec [ -z "${rp_volume_control}" ] && ratpoison -c 'setenv rp_volume_control Master' || true
+exec [ -z "${rp_volume_mute_control}" ] && ratpoison -c 'setenv rp_volume_mute_control Master' || true
+alias volume-unmute exec amixer sset "${rp_volume_mute_control}" unmute; ratpoison -c "echo Unmuted"
+alias volume-mute exec amixer sset "${rp_volume_mute_control}" mute; ratpoison -c "echo Muted"
+alias volume-toggle  exec if amixer sget "${rp_volume_mute_control}" | grep -q '\[off\]'; then ratpoison -c volume-unmute; else ratpoison -c volume-mute; fi
+alias volume-up      exec if amixer sget "${rp_volume_mute_control}" | grep -q '\[off\]'; then ratpoison -c volume-unmute; else ratpoison -c "echo $(amixer sset "${rp_volume_control}" "${rp_volume_step}+" | grep -Eo '\[.*%\](\s*\[.*dB\])?')"; fi
+alias volume-down    exec if amixer sget "${rp_volume_mute_control}" | grep -q '\[off\]'; then ratpoison -c volume-unmute; else ratpoison -c "echo $(amixer sset "${rp_volume_control}" "${rp_volume_step}-" | grep -Eo '\[.*%\](\s*\[.*dB\])?')"; fi
+
+definekey top XF86AudioMute volume-toggle
+definekey top XF86AudioLowerVolume volume-down
+definekey top XF86AudioRaiseVolume volume-up

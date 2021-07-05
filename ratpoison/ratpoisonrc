@@ -1,11 +1,3 @@
-unmanage polybar-main_HDMI-1
-unmanage conky (deku)
-exec udiskie
-exec change_wallpaper
-exec polybar main
-exec conky
-exec xcompmgr
-
 addhook switchwin exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 addhook switchframe exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 addhook switchgroup exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
@@ -13,6 +5,12 @@ addhook switchscreen exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 addhook deletewindow exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 addhook newwindow exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 addhook titlechanged exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
+
+set fgcolor white
+set bgcolor black
+set font Mono-32
+set barpadding 8 8
+set barborder 4
 
 set padding 4 32 4 4
 set border 1
@@ -30,9 +28,9 @@ bind S-s-Return exec rofi -show file-browser -theme purple
 bind s-t exec st
 bind q delete
 bind Q delete
-bind M-Tab exec rofi -modi dswitch:"rofi_ratpoison.py --desktops" -show dswitch -theme purple
-bind Tab exec rofi -modi wswitch:"rofi_ratpoison.py --windows" -show wswitch -theme purple
-bind S exec rofi -modi wswitch:"rofi_ratpoison.py --send-to-desktop" -show wswitch -theme purple
+bind M-Tab exec rofi -modi dswitch:"ratpoison_rofi.py --desktops" -show dswitch -theme purple
+bind Tab exec rofi -modi wswitch:"ratpoison_rofi.py --windows" -show wswitch -theme purple
+bind S exec rofi -modi wswitch:"ratpoison_rofi.py --send-to-desktop" -show wswitch -theme purple
 bind minus vsplit
 bind backslash hsplit
 
