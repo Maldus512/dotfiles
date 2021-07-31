@@ -39,12 +39,9 @@ def workspace_data():
 
     return (current_workspace, workspaces)
 
-def dump_variables():
-    print("workspaces", getenv("workspaces"))
-    print("current_workspace", getenv("current_workspace"))
-
 def new_workspace():
     current_workspace, workspaces = workspace_data()
+    setenv("last_workspace", str(current_workspace))
 
     frame_dump = rprun("fdump") 
     setenv(workspace_dump_name(current_workspace), frame_dump)
@@ -82,12 +79,20 @@ def close_switch(current_workspace):
 
 def next_workspace():
     (current_workspace, workspaces) = prepare_switch()
+    if workspaces == 1:
+        return
+
+    setenv("last_workspace", str(current_workspace))
     current_workspace = (current_workspace + 1) % workspaces
     close_switch(current_workspace)
 
 
 def prev_workspace():
     (current_workspace, workspaces) = prepare_switch()
+    if workspaces == 1:
+        return
+
+    setenv("last_workspace", str(current_workspace))
     if current_workspace == 0:
         current_workspace = workspaces-1
     else:
@@ -95,8 +100,27 @@ def prev_workspace():
     close_switch(current_workspace)
 
 
+def last_workspace():
+    (current_workspace, _) = prepare_switch()
+    new_workspace = int(getenv("last_workspace"))
+    setenv("last_workspace", str(current_workspace))
+    close_switch(new_workspace)
+
+
+def delete_workspace():
+    (current_workspace, workspaces) = prepare_switch()
+    if workspaces == 1:
+        return
+
+
+    setenv("last_workspace", str(current_workspace))
+    current_workspace = (current_workspace + 1) % workspaces
+    close_switch(current_workspace)
+
+
 def select_workspace(workspace):
-    current_workspace, workspaces = prepare_switch()
+    current_workspace, _ = prepare_switch()
+    setenv("last_workspace", str(current_workspace))
     close_switch(workspace)
 
 
@@ -112,6 +136,8 @@ def main():
     parser.add_argument("-n", "--next", action="store_true", help="Move to next workspace")
     parser.add_argument("-p", "--prev", action="store_true", help="Move to previous workspace")
     parser.add_argument("-s", "--select", help="Select workspace")
+    parser.add_argument("-l", "--last", action="store_true", help="Last workspace")
+    parser.add_argument("-d", "--delete", action="store_true", help="Delete workspace")
     args = parser.parse_args()
 
     if args.create_workspace:
@@ -125,6 +151,12 @@ def main():
 
     if args.select:
         select_workspace(args.select)
+
+    if args.last:
+        last_workspace()
+
+    if args.delete:
+        delete_workspace()
 
 
 if __name__ == "__main__":

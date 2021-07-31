@@ -1,14 +1,23 @@
 [colors]
 green=#20C20E
 
+[config]
+include-file=$HOME/.config/polybar/config.ini
+
 [bar/rpi400]
 modules-right=date
 modules-left=cpu memory filesystem wired-network wireless-network
 modules-center=windows
 include-file=$HOME/.config/polybar/base_bar.ini
 
-[bar/pbpro]
+[bar/g57]
 modules-right=battery date
+modules-left=cpu memory filesystem wired-network wireless-network
+modules-center=windows
+include-file=$HOME/.config/polybar/base_bar.ini
+
+[bar/pbpro]
+modules-right=pbbattery date
 modules-left=cpu memory filesystem wired-network wireless-network
 modules-center=windows
 include-file=$HOME/.config/polybar/base_bar.ini
@@ -21,10 +30,33 @@ time = %H:%M:%S
 label = %time% %date%
 
 
-[module/battery]
+[module/pbbattery]
 type = custom/script
 exec = pinebook_battery.py
 interval = 5
+
+
+[module/battery]
+type = internal/battery
+time-format = %H:%M
+format-charging = BAT <ramp-capacity> <label-charging>
+format-discharging = BAT <ramp-capacity> <label-discharging>
+format-full = BAT <ramp-capacity> <label-full>
+label-charging = ^ %percentage%%
+label-discharging = %{F#DDCF00}v %percentage%%%{F-}
+
+ramp-capacity-font = 2
+ramp-capacity-0 = ▁
+ramp-capacity-1 = ▂
+ramp-capacity-2 = ▃
+ramp-capacity-3 = ▄
+ramp-capacity-4 = ▅
+ramp-capacity-5 = ▆
+ramp-capacity-6 = ▇
+ramp-capacity-7 = █
+
+; Only applies if <bar-capacity> is used
+bar-capacity-width = 10
 
 
 [module/cpu]
@@ -77,12 +109,12 @@ ramp-capacity-0 = █
 
 [module/wired-network]
 type = internal/network
-interface = eth0
+interface = ${config.eth}
 label-connected = %ifname% %downspeed:9%
 
 [module/wireless-network]
 type = internal/network
-interface = wlan0
+interface = ${config.wlan}
 label-connected = %essid% %downspeed:9%
 
 [module/windows]

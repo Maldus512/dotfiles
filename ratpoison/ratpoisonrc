@@ -8,7 +8,7 @@ addhook titlechanged exec kill -s USR1 `ratpoison -c "getenv windows_list_pid"`
 
 set fgcolor white
 set bgcolor black
-set font Mono-32
+set font Mono-12
 set barpadding 8 8
 set barborder 4
 
@@ -27,7 +27,7 @@ bind M-s-Return exec rofi -show drun -theme purple
 bind S-s-Return exec rofi -show file-browser -theme purple
 bind s-t exec st
 bind q delete
-bind Q delete
+bind Q kill
 bind M-Tab exec rofi -modi dswitch:"ratpoison_rofi.py --desktops" -show dswitch -theme purple
 bind Tab exec rofi -modi wswitch:"ratpoison_rofi.py --windows" -show wswitch -theme purple
 bind S exec rofi -modi wswitch:"ratpoison_rofi.py --send-to-desktop" -show wswitch -theme purple
@@ -36,6 +36,12 @@ bind backslash hsplit
 
 bind C exec ratpoison_workspaces.py -c
 bind N exec ratpoison_workspaces.py -n
+bind M-BackSpace exec ratpoison_workspaces.py -l
+bind D gdelete
+
+bind BackSpace other
+bind n next
+bind p prev
 
 bind h focusleft
 bind j focusdown
