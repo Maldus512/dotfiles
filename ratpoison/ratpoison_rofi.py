@@ -15,7 +15,7 @@ def rprun(*args):
 def get_current_group():
     groups = [x.strip("\"") for x in rprun("groups").split("\n") if x]
     for group in groups:
-        if found := re.compile("^([0-9]+)\*").search(group):
+        if found := re.compile(r"^([0-9]+)\*").search(group):
             selected = int(found.group(1))
             return selected
     return 0
@@ -33,7 +33,7 @@ def get_groups():
             windows = [x.strip("\"") for x in rprun("windows").split("\n") if x]
             wnames = []
             for window in windows:
-                if found := re.compile("^[0-9]+#([\*|\+|-])#(.+)").search(window):
+                if found := re.compile(r"^[0-9]+#([\*|\+|-])#(.+)").search(window):
                     status = found.group(1)
                     if status == "*":
                         priority = 1
@@ -53,6 +53,13 @@ def get_groups():
     return groups
 
 
+def get_window_name(window):
+    if name := re.compile(r"^[0-9]+#[\*\+\-]#(.+)$").search(window):
+        return name.group(1)
+    else:
+        return window
+
+
 def main():
     parser = argparse.ArgumentParser(description="Navigate through workspaces and windows")
     parser.add_argument("-w", "--windows", action="store_true", help="switch through windows")
@@ -64,21 +71,28 @@ def main():
     if args.choice == None:
         if args.windows:
             windows = rprun("windows")
-            for window in windows.split("\n"):
-                print(window.strip("\""))
+            for window in [x.strip("\"") for x in windows.split("\n") if len(x)]:
+                print(get_window_name(window))
         elif args.desktops or args.send_to_desktop:
             for group in get_groups():
                 print(group)
 
     else:
-        if found := re.compile("^[0-9]+").search(args.choice):
-            selected = int(found.group(0))
         if args.windows:
-            rprun("select", selected)
+            windows = rprun("windows")
+            for window in [x.strip("\"") for x in windows.split("\n") if len(x)]:
+                if get_window_name(window) == args.choice:
+                    if found := re.compile("^[0-9]+").search(window):
+                        selected = int(found.group(0))
+                        rprun("select", selected)
         elif args.send_to_desktop:
-            ratpoison_workspaces.move_to_workspace(selected)
+            if found := re.compile("^[0-9]+").search(args.choice):
+                selected = int(found.group(0))
+                ratpoison_workspaces.move_to_workspace(selected)
         elif args.desktops:
-            ratpoison_workspaces.select_workspace(selected)
+            if found := re.compile("^[0-9]+").search(args.choice):
+                selected = int(found.group(0))
+                ratpoison_workspaces.select_workspace(selected)
 
 
 

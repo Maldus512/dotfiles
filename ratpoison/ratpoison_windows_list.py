@@ -33,22 +33,24 @@ def main():
     signal.signal(signal.SIGUSR1, received_usr1)
     setenv("windows_list_pid", os.getpid())
     event.set()
+    counter = 0
 
     while True:
+        counter += 1
         if event.wait(timeout=4):
             event.clear()
 
         output = rprun("windows")
 
         if output.replace("\n", "") == "No managed windows":
-            print()
+            print(" ")
             continue
         
         windows = [x.strip("\"").replace("\n", "") for x in output.split("\n") if x]
         cleanwindows = []
 
         for window in windows:
-            if found := re.compile("^[0-9]+#([\*|\-|\+])#(.+)").search(window):
+            if found := re.compile(r"^[0-9]+#([\*|\-|\+])#(.+)").search(window):
                 if found.group(1) == "*":
                     selected = True
                 else:
@@ -59,11 +61,16 @@ def main():
 
         print("%{-u} | ", end="")
         for (active, name) in cleanwindows:
+            if len(name) > 16:
+                name = name[:16]
             if active:
                 print(f"%{{+u}}{name}%{{-u}}", end=" | ")
             else:
                 print(f"{name}", end=" | ")
+        print(counter, end="")
         print()
+
+    print("ERROR")
 
 if __name__ == "__main__":
     main()
