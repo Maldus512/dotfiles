@@ -72,13 +72,14 @@ def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=Non
     images = [f for f in os.listdir(assets) if os.path.isfile(
         os.path.join(assets, f)) and ".png" in f]
 
-    logofile = random.choice(images)
-    logo = Image.open(os.path.join(assets, logofile))
-    colorized_img = ImageOps.colorize(logo.convert(
-        "L"), theme["text"], theme["background"])
-    size = int((W/100)*16)
-    logo_newsize = colorized_img.resize((size, size), Image.ANTIALIAS)
-    img.paste(logo_newsize, (int((W-size)/2), int((H)/2-size)))
+    if len(images) > 0:
+        logofile = random.choice(images)
+        logo = Image.open(os.path.join(assets, logofile))
+        colorized_img = ImageOps.colorize(logo.convert(
+            "L"), theme["text"], theme["background"])
+        size = int((W/100)*16)
+        logo_newsize = colorized_img.resize((size, size), Image.ANTIALIAS)
+        img.paste(logo_newsize, (int((W-size)/2), int((H)/2-size)))
 
     draw = ImageDraw.Draw(img)
 
@@ -87,8 +88,6 @@ def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=Non
     text_draw(draw, text, base_font_pixle, img.size, theme, font)
 
     img.save(output, quality=100)
-    with open("/tmp/wallpaperlogo.txt", 'w') as f:
-        f.write(logofile)
 
 
 def main():

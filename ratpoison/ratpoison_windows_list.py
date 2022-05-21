@@ -50,12 +50,15 @@ def main():
         cleanwindows = []
 
         for window in windows:
-            if found := re.compile(r"^[0-9]+#([\*|\-|\+])#(.+)").search(window):
+            if found := re.compile(r"^[0-9]+#([\*|\-|\+])#(.*)").search(window):
                 if found.group(1) == "*":
                     selected = True
                 else:
                     selected = False
-                cleanwindows.append((selected, found.group(2)))
+                if len(found.group(2)) > 0:
+                    cleanwindows.append((selected, found.group(2)))
+                else:
+                    cleanwindows.append((selected, " "))
             else:
                 cleanwindows.append((False, window))
 
