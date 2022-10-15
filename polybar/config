@@ -1,5 +1,6 @@
 [colors]
 green=#20C20E
+purple=#7744BB
 
 [config]
 include-file=$HOME/.config/polybar/config.ini
@@ -15,6 +16,7 @@ modules-right=battery date
 modules-left=cpu memory filesystem wired-network wireless-network
 modules-center=windows
 include-file=$HOME/.config/polybar/base_bar.ini
+monitor = ${env:MONITOR:}
 
 [bar/pbpro]
 modules-right=pbbattery date

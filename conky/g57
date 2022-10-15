@@ -13,10 +13,11 @@
 
 conky.config = {
     alignment = 'top_right',
+    xinerama_head = 0,
     background = false,
-    border_width = 1,
+    border_width = 2,
     cpu_avg_samples = 2,
-    default_color = 'purple',
+    default_color = '7744BB',
     color1 = 'green',
     color2 = 'lightgreen',
     default_outline_color = 'white',
@@ -30,8 +31,8 @@ conky.config = {
     font = 'Ubuntu Mono:size=8',
     font1 = 'Ubuntu Mono:bold:size=8',
     gap_x = 8,
-    gap_y = 38,
-    minimum_height = 720,
+    gap_y = 40,
+    minimum_height = 1030,
     minimum_width = 5,
     net_avg_samples = 2,
     no_buffers = true,
@@ -41,7 +42,9 @@ conky.config = {
     out_to_x = true,
     own_window = true,
     own_window_class = 'Conky',
-    own_window_type = 'desktop',
+    own_window_title = 'conky',
+    own_window_type = 'override',
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
     show_graph_range = false,
     show_graph_scale = false,
     stippled_borders = 0,
@@ -67,10 +70,9 @@ $hr
 ${font1}${color2}File systems:$font$color1
  /     ${fs_used_perc}% - ${fs_used /}/${fs_size /}
  ${fs_bar 8 /}
- ${voffset 12}${goto 30}$font1${color2}${diskio /dev/nvme0n1p2}$font$color1 ${goto 20}${voffset -12}${diskiograph /dev/nvme0n1p2 40,220 07CC0D FF0000 -t}
  Data ${fs_used_perc}% - ${fs_used /home/maldus/Mount/Data}/${fs_size /home/maldus/Mount/Data}
  ${fs_bar 8 /home/maldus/Mount/Data}
- ${voffset 12}${goto 30}$font1${color2}${diskio /dev/sda1}$font$color1 ${goto 20}${voffset -12}${diskiograph /dev/sda1 40,220 07CC0D FF0000 -t}
+ ${voffset 12}${goto 30}$font1${color2}/ ${diskio /dev/nvme0n1p2}$font$color1 ${goto 20}${voffset -12}${diskiograph /dev/nvme0n1p2 40,110 07CC0D FF0000 -t}${goto 150}${voffset 12}$font1${color2}Data ${diskio /dev/sda1}$font$color1 ${voffset -12}${goto 140}${diskiograph /dev/sda1 40,110 07CC0D FF0000 -t}
 $hr
 ${font1}${color2}RAM:$font$color1
  $memperc% - $mem/$memmax 
@@ -83,6 +85,12 @@ ${font1}${color2}CPU:$font$color1
  ${cpugraph cpu3 40,110 07CC0D FF0000 -t} ${goto 140}${cpugraph cpu4 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20}$font1${color2}${cpu cpu3}% ${goto 40} ${hwmon 3 temp3} ${goto 150}${cpu cpu4}% ${goto 180} ${hwmon 3 temp4}${voffset -8}$font$color1
  ${cpugraph cpu5 40,110 07CC0D FF0000 -t} ${goto 140}${cpugraph cpu6 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20}$font1${color2}${cpu cpu5}% ${goto 40} ${hwmon 3 temp5} ${goto 150}${cpu cpu6}% ${goto 180} ${hwmon 3 temp6}${voffset -8}$font$color1
  ${font1}${color2}Load:$font$color1 $loadavg
+$hr
+${font1}${color2}GPU:$font$color1
+${voffset 20}${goto 40}${font1}${color2}${nvidia gpuutil}%${font}${color1}${voffset -20}${goto 20}${nvidiagauge 40,120 gpuutil}
+${voffset -50}${goto 160}Mem : ${nvidia memutil}%
+${goto 160}Temp: ${nvidia gputemp}C
+${goto 160}Freq:${nvidia gpufreqcur}Hz
 $hr
 ${font1}${color2}Networking:
  Wifi:$font$color1
@@ -100,7 +108,6 @@ ${font1}${color2}System monitor:
  ${top name 6} ${top pid 6} ${top cpu 6} ${top mem 6}
 $hr
 ${font1}${color2}Battery:$font$color1
- $battery
- $battery_percent% - $battery_time
+ $battery - $battery_time
  ${battery_bar 16}
 ]]
