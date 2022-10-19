@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from libqtile.command.client import InteractiveCommandClient
+import libqtile
 from PIL import Image
 import array
 import cairo
@@ -13,6 +15,7 @@ from typing import List, Optional
 from gi.repository import Gtk, Gdk, GdkPixbuf
 import gi
 gi.require_version('Gtk', '3.0')
+
 
 PID_FILE = "/tmp/.show_groups_pid.txt"
 
@@ -38,146 +41,107 @@ class Group:
     name: str
     windows: List[Window]
 
-    def from_json(data):
-        def icon_from_json(data):
-            if not data["icon"]:
-                return None
-            else:
-                try:
-                    return Icon(data["icon"]["data"], data["icon"]["width"], data["icon"]["height"])
-                except KeyError:
-                    return None
-
-        return Group(data["name"], [Window(w["x"], w["y"], w["width"], w["height"], icon_from_json(w)) for w in data["windows"]])
-        # return Group(data["name"], [])
-
-
-def grid_from_json(string):
-    try:
-        return [
-            [Group.from_json(dict_group) for dict_group in dict_row] for dict_row in json.loads(string)
-        ]
-    except json.decoder.JSONDecodeError as e:
-        return [[Group("Error", [str(e)])]]
-
 
 class DesktopGridWindow(Gtk.Window):
+    SELECTED_BORDER_WIDTH = 4
+    NOT_SELECTED_BORDER_WIDTH = 1
 
-    def __init__(self, groups_grid, current_group, screen_width=None, screen_height=None):
+    def desktop_frame(name, windows=[], selected=False, screen_width=None, screen_height=None):
         DESKTOP_PREVIEW_WIDTH = 100
         DESKTOP_PREVIEW_HEIGHT = 70
-        SELECTED_BORDER_WIDTH = 4
-        NOT_SELECTED_BORDER_WIDTH = 1
 
-        def desktop_frame(name, windows=[], selected=False):
-            if selected:
-                preview_width = DESKTOP_PREVIEW_WIDTH - SELECTED_BORDER_WIDTH*2
-                preview_height = DESKTOP_PREVIEW_HEIGHT - SELECTED_BORDER_WIDTH*2
-            else:
-                preview_width = DESKTOP_PREVIEW_WIDTH - NOT_SELECTED_BORDER_WIDTH*2
-                preview_height = DESKTOP_PREVIEW_HEIGHT - NOT_SELECTED_BORDER_WIDTH*2
+        if selected:
+            preview_width = DESKTOP_PREVIEW_WIDTH - \
+                DesktopGridWindow.SELECTED_BORDER_WIDTH*2
+            preview_height = DESKTOP_PREVIEW_HEIGHT - \
+                DesktopGridWindow.SELECTED_BORDER_WIDTH*2
+        else:
+            preview_width = DESKTOP_PREVIEW_WIDTH - \
+                DesktopGridWindow.NOT_SELECTED_BORDER_WIDTH*2
+            preview_height = DESKTOP_PREVIEW_HEIGHT - \
+                DesktopGridWindow.NOT_SELECTED_BORDER_WIDTH*2
 
-            def scale(value, first_size, second_size):
-                return value*second_size/first_size
+        def scale(value, first_size, second_size):
+            return value*second_size/first_size
 
-            def scale_window(x, y, width, height):
-                if screen_width == None or screen_height == None:
-                    return None
+        def scale_window(x, y, width, height):
+            if screen_width == None or screen_height == None:
+                return None
 
-                scaled_x = scale(x, screen_width, preview_width)
-                scaled_width = scale(width, screen_width, preview_width)
-                scaled_y = scale(y, screen_height, preview_height)
-                scaled_height = scale(height, screen_height, preview_height)
+            scaled_x = scale(x, screen_width, preview_width)
+            scaled_width = scale(width, screen_width, preview_width)
+            scaled_y = scale(y, screen_height, preview_height)
+            scaled_height = scale(height, screen_height, preview_height)
 
-                return (scaled_x, scaled_y, scaled_width, scaled_height)
+            return (scaled_x, scaled_y, scaled_width, scaled_height)
 
-            def add_window(x, y, width, height, icon, board):
-                if x < 0:
-                    x = 0
-                if y < 0:
-                    y = 0
-                if width < 1:
-                    width = 1
-                if height < 1:
-                    height = 1
+        def add_window(x, y, width, height, icon, board):
+            if x < 0:
+                x = 0
+            if y < 0:
+                y = 0
+            if width < 1:
+                width = 1
+            if height < 1:
+                height = 1
 
-                window_frame = Gtk.Frame()
-                window_frame.set_name("window")
-                window_frame.set_size_request(width, height)
+            window_frame = Gtk.Frame()
+            window_frame.set_name("window")
+            window_frame.set_size_request(width, height)
 
-                if icon:
-                    pil_image = Image.frombytes(
-                        "RGBA", (icon.width, icon.height), bytes(icon.data))
+            if icon:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)
+                #pixbuf.composite(pixbuf, 0, 0, 240, 240, 0, 0, 1, 1, GdkPixbuf.InterpType.NEAREST, 0)
+                if width > height:
+                    side = height - 8
+                else:
+                    side = width - 8
+                pixbuf = pixbuf.scale_simple(
+                    side, side, GdkPixbuf.InterpType.BILINEAR)
 
-                    #data_array = array.array('B', icon.data)
-                    new_data = list(sum(pil_image.getdata(), ()))
-                    data_array = array.array('B', new_data)
+                image = Gtk.Image.new_from_pixbuf(pixbuf)
+                image.set_vexpand(True)
+                image.set_hexpand(True)
+                window_frame.add(image)
 
-                    img = cairo.ImageSurface.create_for_data(
-                        data_array, cairo.FORMAT_ARGB32, icon.width, icon.height
-                    )
-                    #pixbuf = GdkPixbuf.Pixbuf.new_from_data(copy.deepcopy(bytearray(icon.data)), GdkPixbuf.Colorspace.RGB, False, 8, icon.width, icon.height, 0)
-                    #pixbuf = pixbuf.scale_simple(width/2, height/2, Gdk.INTERP_BILINEAR)
+            board.put(window_frame, int(x), int(y))
 
-                    image = Gtk.Image.new_from_surface(img)
-                    #image = Gtk.Image.new_from_pixbuf(pixbuf)
-                    image.set_vexpand(True)
-                    image.set_hexpand(True)
-                    window_frame.add(image)
-                    # frame.add(image)
+        frame = Gtk.Frame()
 
-                board.put(window_frame, int(x), int(y))
+        if selected:
+            frame.set_name("selected")
+        else:
+            frame.set_name("not_selected")
 
-            label = Gtk.Label()
-            label.set_markup(f"<span size=\"16000\">{name}</span>")
+        frame.set_size_request(preview_width, preview_height )
 
-            frame = Gtk.Frame()
-            frame.set_label_align(.5, 0)
-            frame.set_label_widget(label)
+        board = Gtk.Fixed()
+        board.set_hexpand(True)
+        board.set_vexpand(True)
 
-            if selected:
-                frame.set_name("selected")
-            else:
-                frame.set_name("not_selected")
+        border_width = DesktopGridWindow.SELECTED_BORDER_WIDTH if selected else DesktopGridWindow.NOT_SELECTED_BORDER_WIDTH
 
-            frame.set_size_request(preview_width, preview_height)
+        if screen_width and screen_height:
+            for window in windows:
+                if res := scale_window(window.x, window.y, window.width, window.height):
+                    (x, y, width, height) = res
+                    add_window(x, y, width, height, window.icon, board)
 
-            board = Gtk.Fixed()
-            board.set_hexpand(True)
-            board.set_vexpand(True)
+        elif windows:
+            (x, y, width, height) = ((DESKTOP_PREVIEW_WIDTH-border_width *
+                                      2 - 20)/2, (20 - border_width*2)/2, 20, 20)
 
-            border_width = SELECTED_BORDER_WIDTH if selected else NOT_SELECTED_BORDER_WIDTH
+            add_window(x, y, width, height, None, board)
 
-            if screen_width and screen_height:
-                for window in windows:
-                    print(window)
-                    if res := scale_window(window.x, window.y, window.width, window.height):
-                        (x, y, width, height) = res
-                        add_window(x, y, width, height, window.icon, board)
+        frame.add(board)
 
-            elif windows:
-                (x, y, width, height) = ((DESKTOP_PREVIEW_WIDTH-border_width *
-                                          2 - 20)/2, (20 - border_width*2)/2, 20, 20)
+        return frame
 
-                add_window(x, y, width, height, None, board)
-
-            frame.add(board)
-
-            return frame
-
-        super().__init__(title="Desktop grid", window_position=Gtk.WindowPosition.CENTER_ALWAYS)
-        #self.set_default_size(320, 240)
-
+    def __init__(self, groups_grid, current_group, screen_width=None, screen_height=None):
         BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
         HIGHLIGHT_COLOR = os.getenv("FONT_THEME_COLOR")
 
-        if not BORDER_COLOR:
-            BORDER_COLOR = "purple"
-        if not HIGHLIGHT_COLOR:
-            HIGHLIGHT_COLOR = "green"
-
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(f"""
+        CSS = f"""
             label {{
                 margin-top: 4px;
             }}
@@ -199,11 +163,11 @@ class DesktopGridWindow(Gtk.Window):
 
             #selected > border {{ 
                 border-color: {HIGHLIGHT_COLOR};
-                border-width: {SELECTED_BORDER_WIDTH}px;
+                border-width: {DesktopGridWindow.SELECTED_BORDER_WIDTH}px;
             }}
                                             
             #not_selected > border {{
-                border-width: {NOT_SELECTED_BORDER_WIDTH}px;
+                border-width: {DesktopGridWindow.NOT_SELECTED_BORDER_WIDTH}px;
                 border-color: gray;
             }}
 
@@ -211,7 +175,23 @@ class DesktopGridWindow(Gtk.Window):
                 border-width: 1px;
                 border-color: gray;
             }}
-                                            """.encode())
+
+            #window  {{
+                border-width: 1px;
+                border-color: gray;
+                background-color: rgba(0, 0, 0, 0.5);
+            }}
+                                            """.encode()
+
+        super().__init__(title="Desktop grid", window_position=Gtk.WindowPosition.CENTER_ALWAYS)
+
+        if not BORDER_COLOR:
+            BORDER_COLOR = "purple"
+        if not HIGHLIGHT_COLOR:
+            HIGHLIGHT_COLOR = "green"
+
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(CSS)
 
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -228,8 +208,8 @@ class DesktopGridWindow(Gtk.Window):
         for row in groups_grid:
             row_index = 0
             for group in row:
-                grid.attach(desktop_frame(group.name, windows=group.windows, selected=group.name ==
-                            current_group), row_index, column_index, 1, 1)
+                grid.attach(DesktopGridWindow.desktop_frame(group.name, group.windows, group.name ==
+                            current_group, screen_width, screen_height), row_index, column_index, 1, 1)
                 row_index += 1
 
             column_index += 1
@@ -252,9 +232,89 @@ def check_pid(pid):
         return True
 
 
-def show(groups_grid, current_group, screen_width, screen_height):
+def groups_grid_from_list(groups, windows, icons_path):
+    #TODO: focus history
+    icons_config = {}
+    if icons_path:
+        with open(os.path.join(icons_path, "icons.json"), "r") as f:
+            icons_config = json.load(f)
+
+    window_to_icon = {}
+    for k in icons_config:
+        for winclass in icons_config[k]:
+            window_to_icon[winclass] = k
+
+    def get_window_icon(window_classes):
+        if not icons_path:
+            return None
+
+        for winclass in window_classes:
+            try:
+                return os.path.join(icons_path, window_to_icon[winclass])
+            except KeyError:
+                continue
+
+        return None
+
+
+    grid = []
+
+    grid_side = 0
+    num_groups = 0
+    grid_row = 0
+
+    for group in groups:
+        num_groups += 1
+
+        if num_groups > grid_side**2:
+            grid.append([])
+            grid_side += 1
+            grid_row = 0
+        elif len(grid[grid_row]) >= grid_side:
+            grid_row += 1
+
+        windows_by_id = {}
+        focused = group["focus"]
+        focused_window_id = None
+        for wname in group["windows"]:
+            found_windows = [w for w in windows if w["name"]
+                             == wname and w["group"] == group["name"]]
+
+            for found in found_windows:
+                if found["name"] == focused:
+                    focused_window_id = found["id"]
+
+                windows_by_id[found["id"]] = Window(
+                    found["x"], found["y"], found["width"], found["height"], get_window_icon(found["wm_class"]))
+
+        # Make sure the focused window is the last one rendering
+        if focused_window_id:
+            focused_window = windows_by_id.pop(focused_window_id, None)
+            windows_data = list(windows_by_id.values()) + [ focused_window]
+        else:
+            windows_data = list(windows_by_id.values())
+
+        grid[grid_row].append(Group(group["name"], windows_data))
+
+    return grid
+
+
+def get_groups(client, ignore=[]):
+    return [g for g in client.groups().values() if not g["name"] in ignore]
+
+
+def show(screen_width, screen_height, ignore, icons_path):
+    if not ignore:
+        ignore = []
+
     with open(PID_FILE, "w") as f:
         f.write(str(os.getpid()))
+
+    client = InteractiveCommandClient()
+
+    groups_grid = groups_grid_from_list(
+        get_groups(client, ignore), client.windows(), icons_path)
+    current_group = client.group.info()["name"]
 
     win = DesktopGridWindow(groups_grid, current_group,
                             screen_width, screen_height)
@@ -277,16 +337,15 @@ def show(groups_grid, current_group, screen_width, screen_height):
 def main():
     parser = argparse.ArgumentParser(
         description="Show a desktop grid")
-    parser.add_argument("-c", "--current", type=str, help="Current desktop")
-    parser.add_argument("-g", "--grid", required=True, type=str,
-                        help="Desktop grid (in json)")
     parser.add_argument("-W", "--screen-width", type=int,
                         help="Current screen width")
     parser.add_argument("-H", "--screen-height", type=int,
                         help="Current screen height")
+    parser.add_argument("-i", "--ignore", type=str, nargs="+",
+                        help="Ignore these groups")
+    parser.add_argument("-p", "--path", type=str,
+                        help="Theme path")
     args = parser.parse_args()
-
-    grid = grid_from_json(args.grid)
 
     try:
         with open(PID_FILE, "r") as f:
@@ -298,7 +357,7 @@ def main():
     except (FileNotFoundError, ValueError):
         pass
 
-    show(grid, args.current, args.screen_width, args.screen_height)
+    show(args.screen_width, args.screen_height, args.ignore, args.path)
 
 
 if __name__ == "__main__":

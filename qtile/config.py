@@ -12,7 +12,7 @@ import json
 
 import os
 import signal
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 import environment
 import notify
@@ -35,6 +35,7 @@ MARGIN = [2, 2, 4, 2]
 BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
 
 
+# TODO: only the names are strictly required here
 def groups_grid(groups):
     def window_dict(win):
         x, y = win.getposition()
@@ -192,12 +193,12 @@ def autostart():
         Popen(cmd)
 
 
-def show_groups_grid(qtile, current_group=None):
-    if not current_group:
-        try:
-            current_group = qtile.current_group.name
-        except AttributeError as e:
-            logger.warning(str(e))
+def show_groups_grid(qtile):
+    try:
+        current_group = qtile.current_group.name
+        notify.notify(current_group, app="Group", tag="GROUP")
+    except AttributeError as e:
+        logger.warning(str(e))
 
     current_screen = None
     try:
@@ -205,30 +206,20 @@ def show_groups_grid(qtile, current_group=None):
     except AttributeError as e:
         logger.warning(str(e))
 
-    grid = groups_grid([g for g in qtile.groups if g.name != SCRATCHPAD])
-
-    if current_group:
-        group_args = ["-c", current_group]
-    else:
-        group_args = []
-
     if current_screen:
         screen_args = ["-W", str(current_screen.dwidth),
                        "-H", str(current_screen.dheight)]
     else:
         screen_args = []
 
-    # logger.warning(json.dumps(grid))
-    with open("/tmp/args.json", "w") as f:
-        f.write(json.dumps(grid))
-    Popen(["qtile_show_groups.py", "-g", json.dumps(grid)] +
-          group_args + screen_args)
+    logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD,
+                    "-p", environment.ICONS_PATH] + screen_args)
+    Popen(["qtile_show_groups.py", "-i", SCRATCHPAD,
+          "-p", environment.ICONS_PATH] + screen_args)
 
 
 def signal_group_changed(name=None):
-    if name:
-        show_groups_grid(qtile, name)
-        notify.notify(name, app="Group", tag="GROUP")
+    show_groups_grid(qtile)
 
     try:
         with open("/tmp/current_workspace_signaler_pid.txt", "r") as f:
