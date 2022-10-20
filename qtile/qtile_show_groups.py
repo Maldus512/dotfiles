@@ -46,7 +46,7 @@ class DesktopGridWindow(Gtk.Window):
     SELECTED_BORDER_WIDTH = 4
     NOT_SELECTED_BORDER_WIDTH = 1
 
-    def desktop_frame(name, windows=[], selected=False, screen_width=None, screen_height=None):
+    def desktop_frame(name, windows=[], selected=False, screen_width=None, screen_height=None, screen_index=None):
         DESKTOP_PREVIEW_WIDTH = 100
         DESKTOP_PREVIEW_HEIGHT = 70
 
@@ -91,7 +91,6 @@ class DesktopGridWindow(Gtk.Window):
 
             if icon:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)
-                #pixbuf.composite(pixbuf, 0, 0, 240, 240, 0, 0, 1, 1, GdkPixbuf.InterpType.NEAREST, 0)
                 if width > height:
                     side = height - 8
                 else:
@@ -115,7 +114,17 @@ class DesktopGridWindow(Gtk.Window):
 
         frame.set_size_request(preview_width, preview_height )
 
+        if screen_index != None:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.expanduser(f"~/Pictures/Wallpapers/auto{screen_index+1}.png"))
+            pixbuf = pixbuf.scale_simple(preview_width, preview_height, GdkPixbuf.InterpType.BILINEAR)
+
+            image = Gtk.Image.new_from_pixbuf(pixbuf)
+            image.set_vexpand(True)
+            image.set_hexpand(True)
+            frame.add(image)
+
         board = Gtk.Fixed()
+        board.set_name("windows_board")
         board.set_hexpand(True)
         board.set_vexpand(True)
 
@@ -137,9 +146,13 @@ class DesktopGridWindow(Gtk.Window):
 
         return frame
 
-    def __init__(self, groups_grid, current_group, screen_width=None, screen_height=None):
-        BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
-        HIGHLIGHT_COLOR = os.getenv("FONT_THEME_COLOR")
+    def __init__(self, groups_grid, current_group, screen_width=None, screen_height=None, screen_index=None):
+        BORDER_COLOR = os.getenv("MAIN_THEME_COLOR", default="#FFFFFF")
+        HIGHLIGHT_COLOR = os.getenv("FONT_THEME_COLOR", default="#FFFFFF")
+        if screen_index != None:
+            DESKTOP_COLOR = "rgba(0,0,0,0)"
+        else:
+            DESKTOP_COLOR = os.getenv("MAIN_THEME_COLOR_DARK", default="#000000")
 
         CSS = f"""
             label {{
@@ -148,7 +161,7 @@ class DesktopGridWindow(Gtk.Window):
 
             frame {{
                 color: {HIGHLIGHT_COLOR};
-                background-color: black;
+                background-color: {DESKTOP_COLOR};
                 padding: 1px;
             }}
 
@@ -209,7 +222,7 @@ class DesktopGridWindow(Gtk.Window):
             row_index = 0
             for group in row:
                 grid.attach(DesktopGridWindow.desktop_frame(group.name, group.windows, group.name ==
-                            current_group, screen_width, screen_height), row_index, column_index, 1, 1)
+                            current_group, screen_width, screen_height, screen_index), row_index, column_index, 1, 1)
                 row_index += 1
 
             column_index += 1
