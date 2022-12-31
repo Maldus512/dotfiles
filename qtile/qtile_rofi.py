@@ -8,6 +8,7 @@ import libqtile
 from libqtile.command.client import InteractiveCommandClient
 
 
+# TODO: return a properly informative data structure instead of just a confusing dictionary (or simply a non-confusing dictionary)
 def group_names(client, others=False):
     result = {}
 
@@ -40,6 +41,8 @@ def group_names(client, others=False):
 def main():
     parser = argparse.ArgumentParser(
         description="Navigate through workspaces and windows")
+    parser.add_argument("-c", "--close-group", action="store_true",
+                        help="Close current group")
     parser.add_argument("-w", "--windows", nargs="*",
                         help="switch through windows")
     parser.add_argument("-d", "--desktops", action="store_true",
@@ -53,7 +56,20 @@ def main():
     client = InteractiveCommandClient()
 
     if args.choice == None:
-        if args.windows != None:
+        if args.close_group:
+            names, current_group = group_names(
+                client)
+
+            print(
+                f"\0prompt\x1fSelect group to delete (currently in {current_group})")
+            # Current group goes first
+            descriptions = {v: k for k, v in names.items()}
+            print(descriptions[current_group])
+            names.pop(descriptions[current_group])
+            for name in names.keys():
+                print(name)
+
+        elif args.windows != None:
             if len(args.windows) == 0:
                 windows = client.group.info()["windows"]
                 for window in windows:
@@ -79,7 +95,18 @@ def main():
             print("\0prompt\x1fSend to group")
 
     else:
-        if args.windows != None:
+        if args.close_group:
+            names, current_group = group_names(client)
+            to_delete = names[args.choice]
+
+            groups = list(names)
+
+            if current_group == to_delete:
+                new_group = groups[groups.index(args.choice) - 1]
+                client.group[names[new_group]].toscreen()
+
+            client.delgroup(to_delete)
+        elif args.windows != None:
             pass
         elif args.send_to_desktop:
             names, _ = group_names(client)

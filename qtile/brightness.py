@@ -1,36 +1,25 @@
 from subprocess import Popen, PIPE
 import notify
-import re
+from environment import brightness_get, brightness_modify, BRIGHTNESS_ICON
 
-BRIGHTNESSCTL = "brightnessctl"
-BRIGHTNESS_ICON = "/usr/share/icons/Arc/status/symbolic/brightness-display-symbolic.svg"
+
+BRIGHTNESS_TAG = "Brightness"
+
 
 def show():
-    notify.notify(f"{get()}%", app="Brightness", tag=BRIGHTNESSCTL)
+    notify.notify(f"{brightness_get()}%",
+                  app=BRIGHTNESS_TAG, tag=BRIGHTNESS_TAG)
 
 
 def get():
-    pipe = Popen([BRIGHTNESSCTL, "g"], stdout=PIPE)
-    try:
-        return int(pipe.communicate()[0].decode().strip("\n"))
-    except IndexError:
-        return 100
+    brightness_get()
 
 
 def modify(operation):
-    if operation < 0:
-        operation = f"{abs(operation)}-"
-    else:
-        operation = f"+{operation}"
-
-    pipe = Popen([BRIGHTNESSCTL, "s", operation], stdout=PIPE)
-    result = pipe.communicate()[0].decode()
-
-    if match := re.search("Current brightness: (\d+)", result):
-        try:
-            percentage = match.group(1)
-            notify.notify(f"{percentage}%", app="Brightess", tag=BRIGHTNESSCTL, icon=BRIGHTNESS_ICON, progress=int(percentage))
-        except (IndexError, ValueError) as e:
-            notify.notify(f"{e}", app="Brightness", timeout=10000, urgency="critical", icon=BRIGHTNESS_ICON)
-
-
+    try:
+        res = brightness_modify(operation)
+        notify.notify(f"{res}%", app=BRIGHTNESS_TAG, tag=BRIGHTNESS_TAG,
+                      icon=BRIGHTNESS_ICON, progress=int(res))
+    except (ValueError) as e:
+        notify.notify(f"{e}", app=BRIGHTNESS_TAG, timeout=10000,
+                      urgency="critical", icon=BRIGHTNESS_ICON)

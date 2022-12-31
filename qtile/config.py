@@ -48,7 +48,7 @@ def groups_grid(groups):
                 iter(win.icons.items()),
                 key=lambda x: abs(int(x[0].split("x")[0])),
             )
-            #logger.warning([i[0] for i in icons])
+            # logger.warning([i[0] for i in icons])
 
             icon_width, icon_height = map(int, icons[0][0].split("x"))
 
@@ -175,9 +175,29 @@ def move_window_to_next_group_in_grid(qtile, horizontal_shift, vertical_shift):
         qtile.groups_map[next_group].cmd_toscreen()
 
 
-@ lazy.window.function
+@lazy.window.function
 def resize_floating_window(w, width: int = 0, height: int = 0):
     w.cmd_set_size_floating(w.width + width, w.height + height)
+
+
+@lazy.function
+def window_to_previous_screen(qtile, switch_group=False, switch_screen=False):
+    i = qtile.screens.index(qtile.current_screen)
+    if i != 0:
+        group = qtile.screens[i - 1].group.name
+        qtile.current_window.togroup(group, switch_group=switch_group)
+        if switch_screen == True:
+            qtile.cmd_to_screen(i - 1)
+
+
+@lazy.function
+def window_to_next_screen(qtile, switch_group=False, switch_screen=False):
+    i = qtile.screens.index(qtile.current_screen)
+    if i + 1 != len(qtile.screens):
+        group = qtile.screens[i + 1].group.name
+        qtile.current_window.togroup(group, switch_group=switch_group)
+        if switch_screen == True:
+            qtile.cmd_to_screen(i + 1)
 
 
 @ lazy.window.function
@@ -191,6 +211,12 @@ def move_floating_window(window, x: int = 0, y: int = 0):
 def autostart():
     for cmd in environment.AUTOSTART_LIST:
         Popen(cmd)
+
+
+@ hook.subscribe.client_focus
+def bring_to_front(window):
+    if window.floating:
+        window.cmd_bring_to_front()
 
 
 def show_groups_grid(qtile):
@@ -212,10 +238,8 @@ def show_groups_grid(qtile):
     else:
         screen_args = []
 
-    logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD,
-                    "-p", environment.ICONS_PATH] + screen_args)
-    Popen(["qtile_show_groups.py", "-i", SCRATCHPAD,
-          "-p", environment.ICONS_PATH] + screen_args)
+    # logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
+    # Popen(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
 
 
 def signal_group_changed(name=None):
@@ -262,9 +286,8 @@ def floating_dialogs(window):
 
 
 # TODO:
-# - key binding for moving window to group quickly (CTRL+SUPER+SHIFT + direction)
 # - key binding for moving window to screen quickly
-# - fix window switcher
+# - confirm on group removal
 
 keys = [
     #
@@ -322,8 +345,13 @@ keys = [
     Key([SUPER, CONTROL, SHIFT], "k", move_window_to_next_group_in_grid(0, -1)),
     Key([SUPER, CONTROL], "bracketright", lazy.next_screen()),
     Key([SUPER, CONTROL], "bracketleft", lazy.prev_screen()),
+    Key([SUPER, CONTROL, SHIFT], "bracketright",
+        window_to_next_screen(switch_screen=True)),
+    Key([SUPER, CONTROL, SHIFT], "bracketleft",
+        window_to_previous_screen(switch_screen=True)),
     Key([SUPER, CONTROL], "c", lazy.function(new_group)),
-    Key([SUPER, CONTROL], "q", lazy.function(delete_group)),
+    Key([SUPER, CONTROL], "q", lazy.spawn(
+        "rofi -modi dswitch:\"qtile_rofi.py --close-group\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Close current group?"),
     Key([SUPER, CONTROL], "z", lazy.screen.toggle_group()),
     Key([SUPER, CONTROL], "s", lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --desktops\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Search specific group by name"),
@@ -379,13 +407,13 @@ keys = [
     Key([], "XF86MonBrightnessDown", lazy.function(
         lambda _: brightness.modify(-4)), desc="Decrease brightness"),
     Key([], "XF86MonBrightnessUp", lazy.function(
-        lambda _:brightness.modify(+4)), desc="Increase brightness"),
+        lambda _: brightness.modify(+4)), desc="Increase brightness"),
     Key([], "XF86AudioLowerVolume", lazy.function(
         lambda _: volume.modify(-4)), desc="Decrease volume"),
     Key([], "XF86AudioRaiseVolume", lazy.function(
-        lambda _:volume.modify(+4)), desc="Increase volume"),
+        lambda _: volume.modify(+4)), desc="Increase volume"),
     Key([], "XF86AudioMute", lazy.function(
-        lambda _:volume.toggle()), desc="Toggle volume"),
+        lambda _: volume.toggle()), desc="Toggle volume"),
 
     Key([SUPER], "grave", lazy.spawn(
         "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")),
@@ -396,9 +424,9 @@ groups = [
     ScratchPad(SCRATCHPAD,
                [
                    DropDown("term", terminal, opacity=0.8, x=0.05, y=0.01,
-                            width=.9, height=0.9, on_focus_lost_hide=True),
-                   DropDown("web", "firefox", x=0.025, y=0.01, width=.95,
-                            height=.98, on_focus_lost_hide=False),
+                            width=.9, height=0.9, on_focus_lost_hide=False),
+                   DropDown("web", environment.BROWSER, x=0.025, y=0.01, width=.95,
+                            height=.98, on_focus_lost_hide=False, match=Match(wm_class="Navigator")),
                    DropDown("notes", "leafpad /tmp/notes.md",
                             x=.2, y=.01, width=.6, height=.5)
                ], single=False),
@@ -458,6 +486,7 @@ floating_layout = layout.Floating(
         Match(wm_class='makebranch'),  # gitk
         Match(wm_class='maketag'),  # gitk
         Match(wm_class='ssh-askpass'),  # ssh-askpass
+        Match(wm_class='multicontrol-updater'),
         # Match(wm_class='Conky'),  # Cony
         Match(title='branchdialog'),  # gitk
         Match(title='pinentry'),  # GPG key password entry

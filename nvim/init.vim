@@ -11,6 +11,7 @@ let g:netrw_winsize=25
 
 
 "" General
+set clipboard+=unnamedplus
 set showmatch	" Highlight matching brace
 set hlsearch	" Highlight all search results
 set smartcase	" Enable smart-case search
@@ -23,6 +24,7 @@ set smartindent	" Enable smart-indent
 set smarttab	" Enable smart-tabs
 set softtabstop=4	" Number of spaces per Tab
 set clipboard+=unnamedplus
+set termguicolors
 let mapleader="\<C-k>"
  
 "" Advanced{ 'do': './install --all && ln -sf $(pwd) ~/.fzf'}
