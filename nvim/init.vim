@@ -41,7 +41,7 @@ set splitbelow
 
 "" Colors
 colorscheme apprentice
-highlight OverLength ctermbg=gray ctermfg=black guibg=#FFD9D9
+highlight OverLength ctermbg=gray ctermfg=black guibg=#201010
 match OverLength /\%121v.\+/
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 

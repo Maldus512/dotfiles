@@ -42,7 +42,7 @@ def groups_grid(groups):
         width, height = win.getsize()
 
         if not getattr(win, "icons", False):
-            icon = None
+            icons = None
         else:
             icons = sorted(
                 iter(win.icons.items()),
@@ -215,6 +215,8 @@ def autostart():
 
 @ hook.subscribe.client_focus
 def bring_to_front(window):
+    windows_list_update()
+
     if window.floating:
         window.cmd_bring_to_front()
 
@@ -241,6 +243,9 @@ def show_groups_grid(qtile):
     # logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
     # Popen(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
 
+def windows_list_update():
+    Popen(["windows_list.py", "--signal"])
+
 
 def signal_group_changed(name=None):
     show_groups_grid(qtile)
@@ -255,6 +260,7 @@ def signal_group_changed(name=None):
 @ hook.subscribe.changegroup
 def group_changed():
     try:
+        windows_list_update()
         signal_group_changed(qtile.current_group.name)
     except AttributeError:
         pass
@@ -262,11 +268,13 @@ def group_changed():
 
 @ hook.subscribe.setgroup
 def group_set():
+    windows_list_update()
     signal_group_changed(qtile.current_group.name)
 
 
 @ hook.subscribe.addgroup
 def group_added(group):
+    windows_list_update()
     signal_group_changed(group)
 
 
@@ -274,11 +282,14 @@ def group_added(group):
 def group_deleted(group):
     if len(qtile.groups) == 0:
         new_group(qtile)
+    windows_list_update()
     signal_group_changed()
 
 
 @ hook.subscribe.client_new
 def floating_dialogs(window):
+    windows_list_update()
+
     dialog = window.window.get_wm_type() == 'dialog'
     transient = window.window.get_wm_transient_for()
     if dialog or transient:
@@ -372,7 +383,6 @@ keys = [
     #
 
     Key([SUPER], "e", lazy.layout.normalize()),
-    Key([SUPER], "s", lazy.layout.toggle_split()),
     Key([SUPER], "i", lazy.function(toggle_gap)),
     Key([SUPER], "t", lazy.spawn(terminal), desc="Launch terminal"),
 

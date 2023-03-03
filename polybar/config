@@ -122,7 +122,7 @@ label-connected = %essid% %downspeed:9%
 [module/windows]
 type = custom/script
 tail = true
-exec = python -u $HOME/Local/bin/ratpoison_windows_list.py
+exec = python -u $HOME/Local/bin/windows_list.py
 format = <label>
 label = %output%
 format-underline = ${colors.green}
