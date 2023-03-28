@@ -300,6 +300,10 @@ def floating_dialogs(window):
 # - key binding for moving window to screen quickly
 # - confirm on group removal
 
+def switch_group_keys(modifiers, key):
+    return Key(modifiers, key, lazy.spawn(
+        "rofi -modi dswitch:\"qtile_rofi.py --desktops\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Search specific group by name")
+
 keys = [
     #
     # Window control
@@ -364,8 +368,8 @@ keys = [
     Key([SUPER, CONTROL], "q", lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --close-group\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Close current group?"),
     Key([SUPER, CONTROL], "z", lazy.screen.toggle_group()),
-    Key([SUPER, CONTROL], "s", lazy.spawn(
-        "rofi -modi dswitch:\"qtile_rofi.py --desktops\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Search specific group by name"),
+    switch_group_keys([SUPER, CONTROL], "s"),
+    switch_group_keys([SUPER, CONTROL], "slash"),
     Key([SUPER, SHIFT, CONTROL], "s", lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --send-to-desktop\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Send window to group"),
 
