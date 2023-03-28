@@ -5,7 +5,6 @@ from environment import brightness_get, brightness_modify, BRIGHTNESS_ICON
 
 BRIGHTNESS_TAG = "Brightness"
 
-
 def show():
     notify.notify(f"{brightness_get()}%",
                   app=BRIGHTNESS_TAG, tag=BRIGHTNESS_TAG)

@@ -94,9 +94,9 @@ ${goto 160}Freq:${nvidia gpufreqcur}Hz
 $hr
 ${font1}${color2}Networking:
  Wifi:$font$color1
- ${downspeedgraph wlan0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph wlan0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed wlan0} ${goto 150}^$font$color1 ${upspeed wlan0}${voffset -8}
+ ${downspeedgraph wlp112s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph wlp112s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed wlp112s0} ${goto 150}^$font$color1 ${upspeed wlp112s0}${voffset -8}
  $font1${color2}LAN:$font$color1
- ${downspeedgraph eth0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph eth0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed eth0} ${goto 150}^ ${upspeed eth0}${voffset -8}
+ ${downspeedgraph enp109s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph enp109s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed enp109s0} ${goto 150}^ ${upspeed enp109s0}${voffset -8}
 $hr
 ${font1}${color2}System monitor:
  Name           PID    CPU%   MEM%$font$color1
