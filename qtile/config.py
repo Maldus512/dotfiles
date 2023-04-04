@@ -3,7 +3,6 @@ from typing import List  # noqa: F401
 from libqtile import bar, layout
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, DropDown
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal
 from libqtile import hook
 from libqtile.log_utils import logger
 from libqtile.command.client import InteractiveCommandClient
@@ -27,7 +26,7 @@ CONTROL = "control"
 SHIFT = "shift"
 SCRATCHPAD = "~/"
 
-terminal = guess_terminal()
+terminal = environment.TERMINAL
 NAMES = ["Carter", "Catherine", "Jorge", "Emile", "Jun", "Six", "Mimley", "Maureen", "Honoria", "Theresa", "Elijah", "Gladia", "Daneel", "Giskard",
          "Penellaphe", "Ian", "Coralena", "Leopold"]
 
