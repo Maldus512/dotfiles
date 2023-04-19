@@ -1,18 +1,31 @@
 local map = require("utils").map
 local keyset = vim.keymap.set
 
+-- Hide search highlights by pressing Escape
+map("n", "<Esc>", ":noh<CR><Esc>", { silent = true })
+
+--[[
+--Spectre
+--]]
+vim.keymap.set('n', '<C-S-F>', '<cmd>lua require("spectre").open()<CR>', {
+    desc = "Open Spectre"
+})
+vim.keymap.set('v', '<C-S-F>', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
+    desc = "Search current word"
+})
+vim.keymap.set('n', '<C-f>', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', {
+    desc = "Search on current file"
+})
+
 --[[
 --NvimTree
 --]]
-map("n", "<Leader>e", ":NvimTreeToggle<CR>", { silent = true })
+map("n", "<Leader>e", ":NvimTreeFindFileToggle<CR>", { silent = true })
+map("n", "<C-S-e>", ":NvimTreeFindFileToggle<CR>", { silent = true })
 
 --[[
 --Smart splits
 --]]
-vim.keymap.set({ 'n', 'i', 't' }, '<C-h>', require('smart-splits').move_cursor_left)
-vim.keymap.set({ 'n', 'i', 't' }, '<C-j>', require('smart-splits').move_cursor_down)
-vim.keymap.set({ 'n', 'i', 't' }, '<C-k>', require('smart-splits').move_cursor_up)
-vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_right)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-h>', require('smart-splits').move_cursor_left)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-j>', require('smart-splits').move_cursor_down)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-k>', require('smart-splits').move_cursor_up)
@@ -22,22 +35,24 @@ vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_r
 --Telescope
 --]]
 map({ "n", "i" }, "<C-p>", ":Telescope find_files<CR>")
-map({ "n", "i" }, "<C-/>", ":Telescope live_grep<CR>")
+--map({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
+vim.keymap.set("n", "<leader>/", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 map({ "n", "i" }, "<C-S-p>", ":Telescope commands<CR>")
-map({ "n", "i" }, "<C-Tab>", ":Telescope buffers<CR>")
-vim.api.nvim_create_user_command("SearchAllFiles", function ()
-   require("telescope.builtin").find_files({no_ignore=true})
+map({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
+vim.api.nvim_create_user_command("SearchAllFiles", function()
+    require("telescope.builtin").find_files({ no_ignore = true })
 end, {})
+
+local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
+vim.keymap.set({ "s", "v" }, "<leader>/", live_grep_args_shortcuts.grep_visual_selection)
 
 
 --[[
 --Toggleterm
 --]]
-map({ "n", "i" }, "<C-t>", ":ToggleTerm direction=float<CR>", { silent = true })
-map("t", "<C-t>", "<C-\\><C-n>:ToggleTerm direction=float<CR>", { silent = true })
-map("t", "<Esc>", "<C-\\><C-n>", { silent = true })
-map({ "n", "i" }, "<C-x>", ":ToggleTerm size=16<CR>", { silent = true })
-map("t", "<C-x>", "<C-\\><C-n>:ToggleTerm <CR>", { silent = true })
+--vim.keymap.set({"t"}, "<C-x>", function() vim.cmd([[ToggleTerm]]) end)
+--map({ "n", "i" }, "<C-x>", ":ToggleTerm<CR>", { silent = true })
+--map("t", "<C-x>", "<C-\\><C-n>:ToggleTerm <CR>", { silent = true })
 
 --[[
 --Base shortcuts
@@ -52,7 +67,10 @@ map("n", "<Leader>\\", ":vsplit<CR>")
 -- Cycle through buffers; I don't care about flying
 map({ "n", "i" }, "<C-.>", ":BufferNext<CR>", { silent = true })
 map({ "n", "i" }, "<C-,>", ":BufferPrevious<CR>", { silent = true })
-map({ "n", "i" }, "<C-b>", ":BufferLast<CR>", { silent = true })
+map({ "n", "i" }, "<C-Tab>", ":BufferNext<CR>", { silent = true })
+map({ "n", "i" }, "<C-S-Tab>", ":BufferPrevious<CR>", { silent = true })
+map({ "n"}, "<leader>z", ":edit #<CR>", { silent = true })
+map({ "n", "i" }, "<c-z>", ":edit #<CR>", { silent = true })
 
 
 --[[
@@ -153,14 +171,12 @@ keyset("o", "ac", "<Plug>(coc-classobj-a)", opts)
 -- Remap <C-f> and <C-b> to scroll float windows/popups
 ---@diagnostic disable-next-line: redefined-local
 local opts = { silent = true, nowait = true, expr = true }
-keyset("n", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
-keyset("n", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
-keyset("i", "<C-f>",
-    'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
-keyset("i", "<C-b>",
-    'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"', opts)
-keyset("v", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
-keyset("v", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
+keyset("n", "<C-y>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-y>"', opts)
+keyset("n", "<C-e>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-e>"', opts)
+keyset("i", "<C-y>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
+keyset("i", "<C-e>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"', opts)
+keyset("v", "<C-y>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-y>"', opts)
+keyset("v", "<C-e>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-e>"', opts)
 
 
 -- Use CTRL-S for selections ranges
@@ -189,7 +205,6 @@ keyset("x", "<C-s>", "<Plug>(coc-range-select)", { silent = true })
 -- Resume latest coc list
 --keyset("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 
-vim.keymap.del({ "n", "i", "v" }, "<C-F>")
 map({ "n", "i" }, "<C-f>", ":Format<CR>", { silent = true })
 map({ "n", "i", "v" }, "<C-S-I>", ":Format<CR>", { silent = true })
 

@@ -1,4 +1,3 @@
-
 vim.g.mapleader=" "
 vim.o.timeoutlen = 500
 vim.o.mouse = "a"

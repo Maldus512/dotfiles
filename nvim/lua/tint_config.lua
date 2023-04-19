@@ -1,16 +1,16 @@
 require("tint").setup({
-    tint = -24,
-    saturation = .65,
-    tint_background_colors = false,
+    tint = -8,
+    saturation = .8,
+    tint_background_colors = true,
     highlight_ignore_patterns = { "WinSeparator", "Status.*" }, -- Highlight group patterns to ignore, see `string.find`
     window_ignore_function = function(winid)
         local bufid = vim.api.nvim_win_get_buf(winid)
         local buftype = vim.api.nvim_buf_get_option(bufid, "buftype")
         local floating = vim.api.nvim_win_get_config(winid).relative ~= ""
 
-        --local curid = vim.api.nvim_get_current_win()
-        --local curbufid = vim.api.nvim_win_get_buf(curid)
-        --local current_window_buftype = vim.api.nvim_buf_get_option(curbufid, "buftype")
+        local curid = vim.api.nvim_get_current_win()
+        local curbufid = vim.api.nvim_win_get_buf(curid)
+        local current_window_buftype = vim.api.nvim_buf_get_option(curbufid, "buftype")
         if (current_window_buftype == "terminal") then
             return true
         else
@@ -20,7 +20,7 @@ require("tint").setup({
     end
 })
 
-
+--[[
 vim.api.nvim_create_autocmd({ "TermEnter" }, {
     callback = function()
         require("tint").disable()
@@ -34,3 +34,4 @@ vim.api.nvim_create_autocmd({ "TermLeave" }, {
         print("Exited in terminal")
     end, -- Or myvimfun
 })
+]]

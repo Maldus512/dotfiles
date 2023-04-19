@@ -22,24 +22,43 @@ return require("packer").startup(function(use)
     -- Packer can manage itself
     use "wbthomason/packer.nvim"
 
+    use "arthurxavierx/vim-unicoder"
+
+    -- Colorschemes
+    use 'Mofiqul/vscode.nvim'
+    use "savq/melange-nvim"
+    use { "adisen99/apprentice.nvim", requires = { "rktjmp/lush.nvim" } }
+    use { "ellisonleao/gruvbox.nvim" }
+    use 'ful1e5/onedark.nvim'
+    use 'shaunsingh/nord.nvim'
+    use 'folke/tokyonight.nvim'
+    use { "catppuccin/nvim", as = "catppuccin" }
+    use "EdenEast/nightfox.nvim"
+    use "rafamadriz/neon"
+
     use("sindrets/winshift.nvim")
     use("levouh/tint.nvim")
     use "lukas-reineke/virt-column.nvim"
 
     use { "ziglang/zig.vim" }
     use { "brooth/far.vim" }
+    use { "nvim-pack/nvim-spectre", requires = { "nvim-lua/plenary.nvim" } }
 
     use { "sakhnik/nvim-gdb", run = "./install.sh" }
     use('mrjones2014/smart-splits.nvim')
     use { 'lewis6991/gitsigns.nvim', tag = 'release' }
-    use { "adisen99/apprentice.nvim", requires = { "rktjmp/lush.nvim" } }
     use { "nvim-tree/nvim-tree.lua", as = "nvim-tree" }
     use "Asheq/close-buffers.vim"
     use { "neoclide/coc.nvim", branch = "release" }
     use {
         "nvim-telescope/telescope.nvim", tag = "0.1.1",
         -- or                            , branch = "0.1.x",
-        requires = { { "nvim-lua/plenary.nvim" } }
+        requires = { { "nvim-lua/plenary.nvim" },
+            { "nvim-telescope/telescope-live-grep-args.nvim" },
+        },
+        config = function()
+            require("telescope").load_extension("live_grep_args")
+        end,
     }
 
     use { "nvim-zh/colorful-winsep.nvim" }
