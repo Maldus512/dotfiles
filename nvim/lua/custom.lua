@@ -7,6 +7,8 @@ vim.cmd("command ClearSearch noh")
 
 vim.cmd("command Search lua require('spectre').open()")
 
+vim.cmd("command Debug lua require('dap').continue()")
+
 --vim.opt.titlestring = [[%{expand("%")} %h%m%r%w - %{luaeval("require('utils').current_dir_basename()")} - %{v:progname}]]
 
 local previous_window_bufid = 0
@@ -60,7 +62,6 @@ vim.api.nvim_create_autocmd({ "VimLeave" }, {
     pattern = { "*" },
     callback = function()
         if vim.fn.exists("$TMUX") then
-            print("Hello!")
             vim.fn.system("tmux setw automatic-rename")
         end
     end

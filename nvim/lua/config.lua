@@ -1,9 +1,12 @@
+local vim = vim
+
 vim.g.mapleader=" "
 vim.o.timeoutlen = 500
 vim.o.mouse = "a"
 vim.o.number = true
 vim.o.numberwidth = 1
 vim.o.hidden = true
+vim.o.wrap = false
 
 vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 vim.api.nvim_set_option("showmatch", true)

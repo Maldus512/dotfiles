@@ -449,7 +449,7 @@ groups = [
 
 layouts = [
     layout.Columns(border_focus=BORDER_COLOR, border_focus_stack=BORDER_COLOR,
-                   border_width=1, split=False, margin=MARGIN, border_on_single=True, num_columns=1),
+                   border_width=2, split=False, margin=MARGIN, border_on_single=True, num_columns=1),
 ]
 
 
@@ -485,12 +485,12 @@ mouse = [
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
-follow_mouse_focus = True
+follow_mouse_focus = False
 bring_front_click = False
 cursor_warp = True
 floating_layout = layout.Floating(
     border_focus=BORDER_COLOR,
-    border_width=1,
+    border_width=2,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
         *layout.Floating.default_float_rules,

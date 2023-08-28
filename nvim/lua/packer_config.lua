@@ -1,3 +1,5 @@
+local vim = vim
+
 local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
@@ -24,6 +26,12 @@ return require("packer").startup(function(use)
 
     use "arthurxavierx/vim-unicoder"
 
+    -- Debuggers
+    use { 'mfussenegger/nvim-dap' }
+    use { "sakhnik/nvim-gdb", run = "./install.sh" }
+    use { 'simrat39/rust-tools.nvim', requires = { 'neovim/nvim-lspconfig', 'mfussenegger/nvim-dap',
+        'nvim-lua/plenary.nvim' } }
+
     -- Colorschemes
     use 'Mofiqul/vscode.nvim'
     use "savq/melange-nvim"
@@ -44,7 +52,6 @@ return require("packer").startup(function(use)
     use { "brooth/far.vim" }
     use { "nvim-pack/nvim-spectre", requires = { "nvim-lua/plenary.nvim" } }
 
-    use { "sakhnik/nvim-gdb", run = "./install.sh" }
     use('mrjones2014/smart-splits.nvim')
     use { 'lewis6991/gitsigns.nvim', tag = 'release' }
     use { "nvim-tree/nvim-tree.lua", as = "nvim-tree" }

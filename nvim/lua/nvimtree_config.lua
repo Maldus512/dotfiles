@@ -7,11 +7,6 @@ vim.opt.termguicolors = true
 
 -- OR setup with some options
 require("nvim-tree").setup({
-    view = {
-        mappings = {
-            list = { { key = { "<C-K>" }, action = "" }, },
-        }
-    },
     actions = {
         open_file = {
             --resize_window = true,

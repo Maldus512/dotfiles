@@ -1,3 +1,5 @@
+local vim = vim
+
 --[[
 vim.o.background = "dark"
 vim.g.apprentice_contrast_dark = "soft"
@@ -43,11 +45,10 @@ vim.g.nord_italic = false
 vim.g.apprentice_contrast_dark = "soft"
 vim.g.apprentice_italic = true
 vim.g.apprentice_italicize_comments = true
+vim.g.zenbones_darkness = "warm"
 
 
-require("tokyonight").setup({
-    style = "storm",
-})
+--require("tokyonight").setup({ style = "storm", })
 
 -- Default options
 require('nightfox').setup({

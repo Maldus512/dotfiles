@@ -55,7 +55,6 @@ def main():
         except CommandError:
             pass
         print()
-
     print("ERROR")
 
 

@@ -1,3 +1,4 @@
+require("telescope").load_extension("live_grep_args")
 require("telescope").setup {
   defaults = {
     layout_strategy = "horizontal",
