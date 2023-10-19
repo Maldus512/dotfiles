@@ -8,6 +8,7 @@ lua require("config.mason")
 lua require("coc_config")
 lua require("config.heirline.config")
 lua require("config.overseer")
+lua require("config.speaker")
 lua require("config")
 
 lua require("config_local_config")
@@ -58,3 +59,4 @@ endfunction
 "" Unicoder
 let g:unicoder_command_abbreviations = 0
 let g:unicoder_exclude_filetypes = ['tex', 'latex', 'plaintex', 'zig']
+

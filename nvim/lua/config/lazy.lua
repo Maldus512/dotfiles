@@ -14,6 +14,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+    -- Local
+    { dir = "/home/maldus/Projects/Maldus512/speaker.nvim" },
+
     "arthurxavierx/vim-unicoder",
 
     -- Package management

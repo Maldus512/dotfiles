@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import re
-import sys
-import subprocess
 import argparse
 import signal
 import threading
@@ -13,14 +10,12 @@ from libqtile.command.base import CommandError
 PID_FILE = "/tmp/.qtile_windows_list_pid.txt"
 
 
-
-
 def main():
     event = threading.Event()
 
     def received_usr1(signal, frame):
         nonlocal event
-        event.set()
+        threading.Thread(target=event.set).start()
 
     signal.signal(signal.SIGUSR1, received_usr1)
     # setenv("windows_list_pid", os.getpid())
@@ -29,7 +24,8 @@ def main():
     client = InteractiveCommandClient()
 
     while True:
-        if event.wait(timeout=8):
+        # event.wait(8)
+        if event.wait(2):
             event.clear()
 
         try:

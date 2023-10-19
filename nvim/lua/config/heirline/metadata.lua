@@ -6,9 +6,8 @@ local CocStatus = {
     condition = function()
         return pcall(function() vim.fn["coc#status"]() end)
     end,
-    update = function(self) 
-        return self.status ~= vim.fn["coc#status"]()
-    end,
+    update = function(self) return vim.fn["coc#status"]() ~= self.status end,
+    --update = { "User", pattern = "CocStatusChange" },
     --{ "User", pattern = { "CocDiagnosticChange", "CocStatusChange" }, callback = vim.schedule_wrap(function() vim.cmd("redrawstatus") end), },
     init = function(self)
         self.status = vim.fn["coc#status"]()
@@ -33,7 +32,7 @@ local Diagnostics = {
         self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
         self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
     end,
-    update = { "DiagnosticChanged", "BufEnter" },
+    update = { { pattern = { "DiagnosticChanged", "BufEnter" } }, { "User", pattern = "CocDiagnosticChange" } },
     {
         provider = "![",
     },

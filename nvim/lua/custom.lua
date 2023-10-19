@@ -9,6 +9,11 @@ vim.cmd("command Search lua require('spectre').open()")
 
 vim.cmd("command Debug lua require('dap').continue()")
 
+vim.api.nvim_create_user_command("ToggleTermHorizontal", "ToggleTerm direction=horizontal", {})
+vim.api.nvim_create_user_command("ToggleTermFloating", "ToggleTerm direction=float", {})
+
+vim.api.nvim_create_user_command("CocRename", "call CocActionAsync('rename')<CR>", {})
+
 --vim.opt.titlestring = [[%{expand("%")} %h%m%r%w - %{luaeval("require('utils').current_dir_basename()")} - %{v:progname}]]
 
 local previous_window_bufid = 0

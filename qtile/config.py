@@ -367,9 +367,9 @@ keys = [
     Key([SUPER, CONTROL], "q", lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --close-group\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Close current group?"),
     Key([SUPER, CONTROL], "z", lazy.screen.toggle_group()),
-    switch_group_keys([SUPER, CONTROL], "s"),
+    switch_group_keys([SUPER, CONTROL], "p"),
     switch_group_keys([SUPER, CONTROL], "slash"),
-    Key([SUPER, SHIFT, CONTROL], "s", lazy.spawn(
+    Key([SUPER, SHIFT, CONTROL], "p", lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --send-to-desktop\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Send window to group"),
 
     # Scratchpad
@@ -393,9 +393,9 @@ keys = [
     Key([SUPER], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([SUPER], "o", lazy.spawn("rofi -show file-browser -theme purple")),
     Key([SUPER], "Return", lazy.spawn("rofi -show run -theme purple")),
-    Key([SUPER], "s", lazy.spawn(
+    Key([SUPER], "p", lazy.spawn(
         "rofi -show windowcd -kb-row-down \"Super+s,Down\" -kb-row-up \"Super+Shift+s,Up\" -theme purple")),
-    Key([SUPER, "shift"], "s", lazy.spawn(
+    Key([SUPER, "shift"], "p", lazy.spawn(
         "rofi -show window -kb-row-down \"Super+s,Down\" -kb-row-up \"Super+Shift+s,Up\" -theme purple")),
     # Key([SUPER], "Tab", lazy.spawn("rofi -modi dswitch:\"qtile_rofi.py --desktops\" -show dswitch -theme purple")),
     Key([SUPER], "Return", lazy.spawn("rofi -show run -theme purple"),
