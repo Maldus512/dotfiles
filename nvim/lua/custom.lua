@@ -10,6 +10,7 @@ vim.cmd("command Search lua require('spectre').open()")
 vim.cmd("command Debug lua require('dap').continue()")
 
 vim.api.nvim_create_user_command("ToggleTermHorizontal", "ToggleTerm direction=horizontal", {})
+vim.api.nvim_create_user_command("ToggleTermVertical", "ToggleTerm direction=vertical", {})
 vim.api.nvim_create_user_command("ToggleTermFloating", "ToggleTerm direction=float", {})
 
 vim.api.nvim_create_user_command("CocRename", "call CocActionAsync('rename')<CR>", {})

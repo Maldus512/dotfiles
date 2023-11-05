@@ -1,5 +1,4 @@
 local map = require("utils").map
-local speaker = require("speaker").api
 local vim = vim
 
 -- Hide search highlights by pressing Escape
@@ -9,8 +8,10 @@ map("n", "<Esc>", ":noh<CR><Esc>", { silent = true })
 vim.keymap.set({ 'n' }, '<Leader>l', ":SpeakLine<CR>")
 vim.keymap.set({ 'n' }, '<Leader>n', ":SpeakName<CR>")
 vim.keymap.set({ 'n' }, '<Leader><Leader>', ":SpeakCompletion<CR>")
-vim.keymap.set({ "i" }, "<C-S-space>", speaker.speak_completion_list)
---
+
+--local speaker = require("speaker").api
+--vim.keymap.set({ "i" }, "<C-S-space>", speaker.speak_completion_list)
+
 
 --[[
 --Debug
