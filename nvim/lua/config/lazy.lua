@@ -58,7 +58,7 @@ require("lazy").setup({
     { "neoclide/coc.nvim",          branch = "release" },
     {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.1",
+        tag = "0.1.3",
         -- or                            , branch = "0.1.x",
         dependencies = { "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope-live-grep-args.nvim",
@@ -83,7 +83,7 @@ require("lazy").setup({
             ts_update()
         end,
     },
-    { "lukas-reineke/indent-blankline.nvim", dependencies = { "nvim-treesitter/nvim-treesitter" } },
+    { "lukas-reineke/indent-blankline.nvim", main = "ibl", dependencies = { "nvim-treesitter/nvim-treesitter" } },
     "akinsho/toggleterm.nvim",
     "anuvyklack/hydra.nvim",
     "klen/nvim-config-local",
