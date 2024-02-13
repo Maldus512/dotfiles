@@ -37,9 +37,9 @@ local Overseer = {
     static = {
         symbols = {
             ["CANCELED"] = " ",
-            ["FAILURE"] = "󰅚 ",
+            ["FAILURE"] = "󰅚 Failed tasks: ",
             ["SUCCESS"] = "󰄴 ",
-            ["RUNNING"] = "󰑮 ",
+            ["RUNNING"] = "󰑮 Running... ",
         },
     },
     rpad(OverseerTasksForStatus("CANCELED")),

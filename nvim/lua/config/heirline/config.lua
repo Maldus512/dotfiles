@@ -88,7 +88,7 @@ local TerminalName = {
 
 local DefaultStatusline = {
     ViMode, Space, files.name, Align,
-    metadata.git, Space, metadata.diagnostic, metadata.cocstatus, Align,
+    metadata.git, Space, metadata.cocstatus, Align,
     DAPMessages, Align,
     LSPActive, Space, LSPMessages, Space, overseer, Space, files.type, Space, Ruler, Space, ScrollBar
 }

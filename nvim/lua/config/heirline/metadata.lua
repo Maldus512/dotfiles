@@ -32,7 +32,7 @@ local Diagnostics = {
         self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
         self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
     end,
-    update = { { pattern = { "DiagnosticChanged", "BufEnter" } }, { "User", pattern = "CocDiagnosticChange" } },
+    update = { { pattern = { "DiagnosticChanged", "BufEnter", } }, { "User", pattern = "CocDiagnosticChange" } },
     {
         provider = "![",
     },

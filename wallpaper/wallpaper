@@ -10,7 +10,7 @@ import argparse
 import os
 
 
-DEFAULT_DIR = os.path.join(os.environ['HOME'], "Local", "share")
+DEFAULT_DIR = os.path.join(os.environ['HOME'], "Local", "share", "assets")
 
 themes = {"depression": {"text": (147, 161, 161),
                          "background": (20, 20, 60)}}
@@ -62,7 +62,7 @@ def text_draw(draw, text, pixel, ress, theme, font=None):
         (width, baseline), (offset_x, offset_y) = loaded_font.font.getsize(line)
         height = ascent + descent
 
-        draw.text(((W-width)/2-16, (H-height*len(text)/2)/2+height*i),
+        draw.text(((W-width)/2-16, (H-height*len(text)/2)/2+height*i + height),
                   line, theme["text"], font=loaded_font)
 
 
@@ -81,7 +81,7 @@ def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=Non
         colorized_img = ImageOps.colorize(logo.convert(
             "L"), theme["text"], theme["background"])
         size = int((W/100)*16)
-        logo_newsize = colorized_img.resize((size, size), Image.ANTIALIAS)
+        logo_newsize = colorized_img.resize((size, size))
         img.paste(logo_newsize, (int((W-size)/2), int((H)/2-size)))
 
     draw = ImageDraw.Draw(img)

@@ -12,9 +12,9 @@ import argparse
 import json
 from dataclasses import dataclass
 from typing import List, Optional
-from gi.repository import Gtk, Gdk, GdkPixbuf
 import gi
 gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 
 PID_FILE = "/tmp/.show_groups_pid.txt"

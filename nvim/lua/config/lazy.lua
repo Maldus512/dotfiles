@@ -20,18 +20,19 @@ require("lazy").setup({
     "arthurxavierx/vim-unicoder",
 
     -- Package management
-    { "williamboman/mason.nvim", build = ":MasonUpdate" },
+    { "williamboman/mason.nvim",                           build = ":MasonUpdate" },
 
     -- Debuggers
     'mfussenegger/nvim-dap',
-    { "sakhnik/nvim-gdb",        build = "./install.sh" },
+    { "rcarriga/nvim-dap-ui",   dependencies = "mfussenegger/nvim-dap" },
+    { "sakhnik/nvim-gdb",       build = "./install.sh" },
 
     -- Colorschemes
-    { "EdenEast/nightfox.nvim",  priority = 1000 },
-    { "catppuccin/nvim",         priority = 1000 },
-    { "folke/tokyonight.nvim",   priority = 1000 },
-    { "RRethy/nvim-base16",      priority = 1000 },
-    { "mcchrish/zenbones.nvim",  priority = 1000,       dependencies = "rktjmp/lush.nvim" },
+    { "EdenEast/nightfox.nvim", priority = 1000 },
+    { "catppuccin/nvim",        priority = 1000 },
+    { "folke/tokyonight.nvim",  priority = 1000 },
+    { "RRethy/nvim-base16",     priority = 1000 },
+    { "mcchrish/zenbones.nvim", priority = 1000,                       dependencies = "rktjmp/lush.nvim" },
 
     -- Ui
     "stevearc/dressing.nvim",
@@ -42,6 +43,14 @@ require("lazy").setup({
 
     -- Development
     "stevearc/overseer.nvim",
+    {
+        'neovim/nvim-lspconfig',
+        config = function()
+            require('lspconfig')['lua_ls'].setup({})
+        end,
+        ft = { 'lua' }
+    },
+    "folke/neodev.nvim",
 
     "sindrets/winshift.nvim",
     "levouh/tint.nvim",
