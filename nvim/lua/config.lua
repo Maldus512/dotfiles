@@ -9,6 +9,7 @@ vim.o.hidden = true
 vim.o.wrap = false
 
 vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
+--vim.api.nvim_set_option("clipboard","unnamed")
 vim.api.nvim_set_option("showmatch", true)
 vim.api.nvim_set_option("hlsearch", true)
 vim.api.nvim_set_option("smartcase", true)
