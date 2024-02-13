@@ -1,5 +1,6 @@
 local vim = vim
 local dap = require('dap')
+local log = require("log")
 
 -- Utility functions
 
@@ -34,8 +35,22 @@ dap.adapters.lldb = {
     name = 'lldb'
 }
 
--- Map K to hover during debug sessions
+local dapui = require("dapui")
+dap.listeners.after.event_initialized["dapui_config"] = function()
+    vim.hydras.debug:activate()
+    dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+    vim.hydras.debug:exit()
+    dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+    vim.hydras.debug:exit()
+    dapui.close()
+end
 
+-- Map K to hover during debug sessions
+--[[
 local api = vim.api
 local keymap_restore = {}
 dap.listeners.after['event_initialized']['me'] = function()
@@ -64,16 +79,16 @@ dap.listeners.after['event_terminated']['me'] = function()
     end
     keymap_restore = {}
 end
-
+--]]
 -- Default configurations
 --
 
 local function mk_env()
-  local variables = {}
-  for k, v in pairs(vim.fn.environ()) do
-    variables[k] = v
-  end
-  return variables
+    local variables = {}
+    for k, v in pairs(vim.fn.environ()) do
+        variables[k] = v
+    end
+    return variables
 end
 
 dap.configurations.c = {

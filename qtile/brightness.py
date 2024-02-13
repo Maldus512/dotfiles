@@ -1,6 +1,13 @@
 from subprocess import Popen, PIPE
 import notify
-from environment import brightness_get, brightness_modify, BRIGHTNESS_ICON
+
+try:
+    from environment import brightness_get, brightness_modify, BRIGHTNESS_ICON
+except ImportError:
+    brightness_get = lambda: 0
+    brightness_modify = lambda x: 0
+    BRIGHTNESS_ICON = ""
+
 
 
 BRIGHTNESS_TAG = "Brightness"

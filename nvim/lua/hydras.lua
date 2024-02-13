@@ -1,10 +1,11 @@
 local Hydra = require("hydra")
 local gitsigns = require('gitsigns')
+local vim = vim
 
 local hint = [[
  _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
- _K_: prev hunk   _u_: undo last stage   _p_: preview hunk   _B_: blame show full
- ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
+ _K_: prev hunk   _U_: undo last stage   _p_: preview hunk   _B_: blame show full
+ ^ ^              _S_: stage buffer      _r_: reset hunk     _/_: show base file
  ^
  ^ ^              _<Enter>_:                     _q_: exit
 ]]
@@ -13,8 +14,9 @@ Hydra({
     name = 'Git',
     hint = hint,
     config = {
-        buffer = bufnr,
-        color = 'red',
+        --buffer = bufnr,
+        color = 'pink',
+        foreign_keys = "run",
         invoke_on_body = true,
         hint = {
             border = 'rounded'
@@ -65,10 +67,11 @@ Hydra({
                 end
             end,
             { desc = 'stage hunk' } },
-        { 'u',       gitsigns.undo_stage_hunk,                           { desc = 'undo last stage' } },
+        { 'U',       gitsigns.undo_stage_hunk,                           { desc = 'undo last stage' } },
         { 'S',       gitsigns.stage_buffer,                              { desc = 'stage buffer' } },
         { 'p',       gitsigns.preview_hunk,                              { desc = 'preview hunk' } },
         { 'd',       gitsigns.toggle_deleted,                            { nowait = true, desc = 'toggle deleted' } },
+        { 'r',       gitsigns.reset_hunk,                                { desc = 'Reset hunk' } },
         { 'b',       gitsigns.blame_line,                                { desc = 'blame' } },
         { 'B',       function() gitsigns.blame_line { full = true } end, { desc = 'blame show full' } },
         { '/',       gitsigns.show,                                      { exit = true, desc = 'show base file' } }, -- show the base of the file
@@ -191,6 +194,8 @@ Hydra({
 
 
 local dap = require('dap')
+local dap_widgets = require('dap.ui.widgets')
+local dapui = require('dapui')
 local debug_hint = [[
  _q_: Close
  _x_: Terminate
@@ -201,6 +206,7 @@ local debug_hint = [[
  _o_: Step out
  _t_: Toggle breakpoint
  _T_: Clear breakpoints
+ _K_: Inspect
 ]]
 local debug_hydra = Hydra {
     name = 'Debug',
@@ -219,13 +225,13 @@ local debug_hydra = Hydra {
     heads = {
         { 'o', dap.step_out,          { desc = 'step out' } },
         { 'n', dap.step_over,         { desc = 'step over' } },
-        --{ 'K', dap.step_back, { desc = 'step back' } },
+        { 'K', dapui.eval,   { desc = "hover" } },
         { 's', dap.step_into,         { desc = 'step into' } },
         { 't', dap.toggle_breakpoint, { desc = 'toggle breakpoint' } },
         { 'T', dap.clear_breakpoints, { desc = 'clear breakpoints' } },
         { 'c', dap.continue,          { desc = 'continue' } },
         { 'x', dap.terminate,         { desc = 'terminate', exit = true } },
-        { 'r', dap.repl.toggle,         { desc = 'open repl' } },
+        { 'r', dap.repl.toggle,       { desc = 'open repl' } },
         { 'q', nil,                   { exit = true, nowait = true, desc = 'exit' } },
     }
 }

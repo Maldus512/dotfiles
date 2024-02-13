@@ -14,7 +14,7 @@ def group_names(client, others=False):
 
     current_group = client.group.info()["name"]
 
-    for group in client.groups().keys():
+    for group in client.get_groups().keys():
         if group == "~/":
             continue
 

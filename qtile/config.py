@@ -13,7 +13,6 @@ import os
 import signal
 from subprocess import Popen, PIPE
 
-import environment
 import notify
 import brightness
 import volume
@@ -26,13 +25,21 @@ CONTROL = "control"
 SHIFT = "shift"
 SCRATCHPAD = "~/"
 
-terminal = environment.TERMINAL
 NAMES = ["Carter", "Catherine", "Jorge", "Emile", "Jun", "Six", "Mimley", "Maureen", "Honoria", "Theresa", "Elijah", "Gladia", "Daneel", "Giskard",
          "Penellaphe", "Ian", "Coralena", "Leopold"]
 
 MARGIN = [2, 2, 4, 2]
 BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
 
+
+def get_env(attr):
+    try:
+        import environment
+        return getattr(environment, attr)
+    except (ImportError, AttributeError):
+        return None
+
+terminal = get_env("TERMINAL")
 
 # TODO: only the names are strictly required here
 def groups_grid(groups):
@@ -81,9 +88,9 @@ def groups_grid(groups):
 def toggle_gap(qtile):
     # TODO: get conky width
     if qtile.current_screen.right.size == 272:
-        qtile.current_screen.right.size = 0
+        qtile.current_screen.right = bar.Gap(0)
     else:
-        qtile.current_screen.right.size = 272
+        qtile.current_screen.right = bar.Gap(272)
     qtile.current_group.layout_all()
 
 
@@ -208,7 +215,7 @@ def move_floating_window(window, x: int = 0, y: int = 0):
 
 @ hook.subscribe.startup_once
 def autostart():
-    for cmd in environment.AUTOSTART_LIST:
+    for cmd in get_env("AUTOSTART_LIST"):
         Popen(cmd)
 
 
@@ -438,12 +445,13 @@ groups = [
                [
                    DropDown("term", terminal, opacity=0.8, x=0.05, y=0.01,
                             width=.9, height=0.9, on_focus_lost_hide=False),
-                   DropDown("web", environment.BROWSER, x=0.025, y=0.01, width=.95,
+                   DropDown("web", get_env("BROWSER"), x=0.025, y=0.01, width=.95,
                             height=.98, on_focus_lost_hide=False, match=Match(wm_class="Navigator")),
                    DropDown("notes", "leafpad /tmp/notes.md",
                             x=.2, y=.01, width=.6, height=.5)
                ], single=False),
     Group(NAMES[0], persist=True),
+    Group(NAMES[1], persist=False),
 ]
 
 

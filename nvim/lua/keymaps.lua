@@ -1,21 +1,31 @@
 local map = require("utils").map
-local speaker = require("speaker").api
 local vim = vim
 
 -- Hide search highlights by pressing Escape
 map("n", "<Esc>", ":noh<CR><Esc>", { silent = true })
 
+
+vim.keymap.set({'n', 'i'}, '<C-o>', '<C-o>zz')
+vim.keymap.set({'n', 'i'}, '<C-i>', '<C-i>zz')
+vim.keymap.set("n", "n", "nzz")
+vim.keymap.set("n", "N", "Nzz")
+vim.keymap.set("n", "*", "*zz")
+vim.keymap.set("n", "#", "#zz")
+
 -- Speaker
 vim.keymap.set({ 'n' }, '<Leader>l', ":SpeakLine<CR>")
 vim.keymap.set({ 'n' }, '<Leader>n', ":SpeakName<CR>")
 vim.keymap.set({ 'n' }, '<Leader><Leader>', ":SpeakCompletion<CR>")
-vim.keymap.set({ "i" }, "<C-S-space>", speaker.speak_completion_list)
---
+
+--local speaker = require("speaker").api
+--vim.keymap.set({ "i" }, "<C-S-space>", speaker.speak_completion_list)
+
 
 --[[
 --Debug
 --]]
 local dap = require("dap")
+local dap_ui = require("dapui")
 vim.keymap.set('n', '<F4>', function() dap.terminate() end)
 vim.keymap.set('n', '<F5>', function() dap.continue() end)
 vim.keymap.set('n', '<F10>', function() dap.step_over() end)
@@ -23,6 +33,7 @@ vim.keymap.set('n', '<F11>', function() dap.step_into() end)
 vim.keymap.set('n', '<F12>', function() dap.step_out() end)
 vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
 vim.keymap.set('n', '<Leader>B', function() dap.set_breakpoint() end)
+vim.keymap.set('n', '<Leader>D', function() dap_ui.toggle() end)
 --[[
 --vim.keymap.set('n', '<Leader>lp', function() dap.set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
 vim.keymap.set('n', '<Leader>dr', function() dap.repl.open() end)
@@ -42,7 +53,6 @@ vim.keymap.set('n', '<Leader>ds', function()
     widgets.centered_float(widgets.scopes)
 end)
 --]]
-
 --[[
 --Spectre
 --]]
@@ -72,13 +82,14 @@ vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_r
 --[[
 --Telescope
 --]]
-map({ "n", "i" }, "<C-p>", ":Telescope find_files<CR>")
+local builtin = require("telescope.builtin")
+vim.keymap.set({ "n", "i" }, "<C-p>", function() builtin.find_files() end)
 --map({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
 vim.keymap.set("n", "<C-/>", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 map({ "n", "i" }, "<C-Enter>", ":Telescope commands<CR>")
 map({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
 vim.api.nvim_create_user_command("SearchAllFiles", function()
-    require("telescope.builtin").find_files({ no_ignore = true })
+    builtin.find_files({ no_ignore = true })
 end, {})
 
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
@@ -97,7 +108,7 @@ vim.keymap.set({ "s", "v" }, "<C-/>", live_grep_args_shortcuts.grep_visual_selec
 --]]
 map("t", "`<Esc>", "<C-\\><C-n>", { silent = true })
 
-map("n", "<Leader>q", ":enew<bar>bd #<CR>", { silent = true })
+--map("n", "<Leader>q", ":enew<bar>bd #<CR>", { silent = true })
 map("n", "<Leader>q", ":Bdelete this<CR>", { silent = true })
 map("n", "<Leader>Q", ":Bdelete! this<CR>", { silent = true })
 map("n", "<C-->", ":split<CR>")
@@ -110,6 +121,8 @@ map({ "n", "i" }, "<C-Tab>", ":BufferNext<CR>", { silent = true })
 map({ "n", "i" }, "<C-S-Tab>", ":BufferPrevious<CR>", { silent = true })
 map({ "n" }, "<leader>z", ":edit #<CR>", { silent = true })
 map({ "n", "i" }, "<c-z>", ":edit #<CR>", { silent = true })
+
+map({ "n", "i" }, "<C-;>", ":OverseerToggle right<CR>", { silent = true })
 
 
 --[[
@@ -143,7 +156,7 @@ vim.keymap.set("i", "<c-space>", function()
         local tocall = vim.fn["coc#refresh"]()
         local command = string.match(tocall, "=([ -~]+)")
         if command ~= nil then
-            vim.cmd("call "..command)
+            vim.cmd("call " .. command)
         end
     end,
     { silent = true, expr = true })

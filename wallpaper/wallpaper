@@ -10,14 +10,14 @@ import argparse
 import os
 
 
-DEFAULT_DIR = os.path.join(os.environ['HOME'], "Local", "share")
+DEFAULT_DIR = os.path.join(os.environ['HOME'], "Local", "share", "assets")
 
 themes = {"depression": {"text": (147, 161, 161),
                          "background": (20, 20, 60)}}
 
 
 def get_random_text():
-    assets = os.path.join(DEFAULT_DIR, "assets", "quotes.txt")
+    assets = os.path.join(DEFAULT_DIR, "quotes.txt")
     lines = open(assets).read().splitlines()
     return random.choice(lines)
 
@@ -58,8 +58,11 @@ def text_draw(draw, text, pixel, ress, theme, font=None):
         else:
             loaded_font = ImageFont.load_default()
 
-        w, h = loaded_font.getsize(line)
-        draw.text(((W-w)/2-16, (H-h*len(text)/2)/2+h*i+64),
+        ascent, descent = loaded_font.getmetrics()
+        (width, baseline), (offset_x, offset_y) = loaded_font.font.getsize(line)
+        height = ascent + descent
+
+        draw.text(((W-width)/2-16, (H-height*len(text)/2)/2+height*i + height),
                   line, theme["text"], font=loaded_font)
 
 
@@ -68,7 +71,7 @@ def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=Non
     img = Image.new("RGB", resolution, theme["background"])
     W, H = img.size
 
-    assets = os.path.join(DEFAULT_DIR, "assets")
+    assets = os.path.join(DEFAULT_DIR)
     images = [f for f in os.listdir(assets) if os.path.isfile(
         os.path.join(assets, f)) and ".png" in f]
 
@@ -78,7 +81,7 @@ def generate_img(output="", theme={}, text="", resolution=(1920, 1080), font=Non
         colorized_img = ImageOps.colorize(logo.convert(
             "L"), theme["text"], theme["background"])
         size = int((W/100)*16)
-        logo_newsize = colorized_img.resize((size, size), Image.ANTIALIAS)
+        logo_newsize = colorized_img.resize((size, size))
         img.paste(logo_newsize, (int((W-size)/2), int((H)/2-size)))
 
     draw = ImageDraw.Draw(img)
