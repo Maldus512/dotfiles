@@ -12,13 +12,13 @@ vim.keymap.set("n", "N", "Nzz")
 vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
--- Speaker
-vim.keymap.set({ 'n' }, '<Leader>l', ":SpeakLine<CR>")
-vim.keymap.set({ 'n' }, '<Leader>n', ":SpeakName<CR>")
-vim.keymap.set({ 'n' }, '<Leader><Leader>', ":SpeakCompletion<CR>")
+-- Reader
+vim.keymap.set({ 'n' }, '<Leader>l', ":ReadLine<CR>")
+vim.keymap.set({ 'n' }, '<Leader>n', ":ReadName<CR>")
+vim.keymap.set({ 'n' }, '<Leader><Leader>', ":ReadCompletion<CR>")
 
---local speaker = require("speaker").api
---vim.keymap.set({ "i" }, "<C-S-space>", speaker.speak_completion_list)
+--local reader = require("reader").api
+--vim.keymap.set({ "i" }, "<C-S-space>", reader.read_completion_list)
 
 
 --[[

@@ -8,7 +8,7 @@ lua require("config.mason")
 lua require("coc_config")
 lua require("config.heirline.config")
 lua require("config.overseer")
-lua require("config.speaker")
+lua require("config.reader")
 lua require("config")
 
 lua require("config.neodev")

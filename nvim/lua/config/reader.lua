@@ -1,6 +1,6 @@
-local status, speak = pcall(require, "speak")
+local status, reader = pcall(require, "reader")
 if status then
-    speak.setup {
+    reader.setup {
         autostart = false,
         speed = 260,
     }

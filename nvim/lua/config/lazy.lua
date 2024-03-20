@@ -15,7 +15,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     -- Local
-    { dir = "/home/maldus/Projects/Maldus512/speaker.nvim" },
+    { dir = "/home/maldus/Projects/Maldus512/reader.nvim" },
 
     "arthurxavierx/vim-unicoder",
 
@@ -24,7 +24,7 @@ require("lazy").setup({
 
     -- Debuggers
     'mfussenegger/nvim-dap',
-    { "rcarriga/nvim-dap-ui",   dependencies = "mfussenegger/nvim-dap" },
+    { "rcarriga/nvim-dap-ui",   dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
     { "sakhnik/nvim-gdb",       build = "./install.sh" },
 
     -- Colorschemes
