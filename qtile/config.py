@@ -398,7 +398,7 @@ keys = [
 
     # Run/kill processes
     Key([SUPER], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([SUPER], "o", lazy.spawn("rofi -show file-browser -theme purple")),
+    Key([SUPER], "o", lazy.spawn("rofi -show filebrowser -theme purple")),
     Key([SUPER], "Return", lazy.spawn("rofi -show run -theme purple")),
     Key([SUPER], "p", lazy.spawn(
         "rofi -show windowcd -kb-row-down \"Super+s,Down\" -kb-row-up \"Super+Shift+s,Up\" -theme purple")),

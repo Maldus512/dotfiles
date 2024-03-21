@@ -62,3 +62,4 @@ endfunction
 let g:unicoder_command_abbreviations = 0
 let g:unicoder_exclude_filetypes = ['tex', 'latex', 'plaintex', 'zig']
 
+let g:kitty_navigator_no_mappings = 1

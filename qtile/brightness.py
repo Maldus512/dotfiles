@@ -1,9 +1,11 @@
 from subprocess import Popen, PIPE
 import notify
+from libqtile.log_utils import logger
 
 try:
     from environment import brightness_get, brightness_modify, BRIGHTNESS_ICON
-except ImportError:
+except ImportError as e:
+    logger.warning("Brightness: " + str(e))
     brightness_get = lambda: 0
     brightness_modify = lambda x: 0
     BRIGHTNESS_ICON = ""
