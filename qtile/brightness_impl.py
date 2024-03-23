@@ -16,12 +16,12 @@ def brightness_get_xrandr():
 
 
 def brightness_modify_xrandr(operation):
-    value = brightness_get()
+    value = brightness_get_xrandr()
 
     try:
         pipe = Popen([XRANDR, "--output", "DP-0", "--brightness",
                      str(float(value+operation)/100.)], stdout=PIPE)
-        return brightness_get()
+        return brightness_get_xrandr()
     except ValueError as e:
         raise e
     except IndexError as e:

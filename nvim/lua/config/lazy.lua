@@ -14,8 +14,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    -- Local
-    { dir = "/home/maldus/Projects/Maldus512/reader.nvim" },
+    "maldus512/reader.nvim",
 
     "arthurxavierx/vim-unicoder",
 
