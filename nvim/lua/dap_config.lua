@@ -121,10 +121,23 @@ local setup_c_configuration = function(file)
     }
 end
 
+local setup_openocd_configuration = function(args)
+    return {
+ name= "Remote attach",
+        type = "codelldb",
+        request = "custom",
+        targetCreateCommands= {"target create ${workspaceFolder}/" .. args.target},
+        processCreateCommands= {"gdb-remote " .. args.remoteHost .. ":" .. args.port},
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+    }
+end
+
 
 vim.dap = {
     setup_c_configuration = setup_c_configuration,
     setup_rust_configuration = setup_c_configuration,
     setup_cpp_configuration = setup_c_configuration,
     setup_zig_configuration = setup_c_configuration,
+    setup_openocd_configuration = setup_openocd_configuration,
 }

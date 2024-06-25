@@ -28,3 +28,10 @@ vim.o.undolevels = 100
 vim.o.backspace = "indent,eol,start"
 vim.o.encoding = "utf-8"
 vim.o.splitbelow = true
+
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = {'*.md'},
+  group = group,
+  command = 'setlocal wrap'
+})

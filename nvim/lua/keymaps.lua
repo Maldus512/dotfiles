@@ -5,8 +5,8 @@ local vim = vim
 map("n", "<Esc>", ":noh<CR><Esc>", { silent = true })
 
 
-vim.keymap.set({'n', 'i'}, '<C-o>', '<C-o>zz')
-vim.keymap.set({'n', 'i'}, '<C-i>', '<C-i>zz')
+vim.keymap.set({ 'n', 'i' }, '<C-o>', '<C-o>zz')
+vim.keymap.set({ 'n', 'i' }, '<C-i>', '<C-i>zz')
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")
 vim.keymap.set("n", "*", "*zz")

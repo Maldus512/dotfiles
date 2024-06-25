@@ -30,6 +30,7 @@ NAMES = ["Carter", "Catherine", "Jorge", "Emile", "Jun", "Six", "Mimley", "Maure
 
 MARGIN = [2, 2, 4, 2]
 BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
+BORDER_COLOR_FLOATING = os.getenv("MAIN_THEME_COLOR_LIGHT")
 
 
 def get_env(attr):
@@ -39,9 +40,12 @@ def get_env(attr):
     except (ImportError, AttributeError):
         return None
 
+
 terminal = get_env("TERMINAL")
 
 # TODO: only the names are strictly required here
+
+
 def groups_grid(groups):
     def window_dict(win):
         x, y = win.getposition()
@@ -249,6 +253,7 @@ def show_groups_grid(qtile):
     # logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
     # Popen(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
 
+
 def windows_list_update():
     Popen(["windows_list.py", "--signal"])
 
@@ -309,6 +314,7 @@ def floating_dialogs(window):
 def switch_group_keys(modifiers, key):
     return Key(modifiers, key, lazy.spawn(
         "rofi -modi dswitch:\"qtile_rofi.py --desktops\" -show dswitch -kb-row-down \"Super+Control+s,Down\" -kb-row-up \"Super+Control+Shift+s,Up\" -theme purple"), desc="Search specific group by name")
+
 
 keys = [
     #
@@ -498,7 +504,10 @@ bring_front_click = False
 cursor_warp = True
 floating_layout = layout.Floating(
     border_focus=BORDER_COLOR,
-    border_width=2,
+    border_normal=BORDER_COLOR_FLOATING,
+    border_width=4,
+    max_border_width=2,
+    fullscreen_border_width=2,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
         *layout.Floating.default_float_rules,

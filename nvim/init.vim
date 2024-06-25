@@ -61,4 +61,3 @@ endfunction
 "" Unicoder
 let g:unicoder_command_abbreviations = 0
 let g:unicoder_exclude_filetypes = ['tex', 'latex', 'plaintex', 'zig']
-
