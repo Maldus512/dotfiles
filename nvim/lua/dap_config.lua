@@ -11,8 +11,8 @@ end
 dap.adapters.dart = {
     type = "executable",
     -- As of this writing, this functionality is open for review in https://github.com/flutter/flutter/pull/91802
-    command = "flutter",
-    args = { "debug_adapter" }
+    command = "fvm",
+    args = { "flutter", "debug_adapter" }
 }
 
 -- Adapters
