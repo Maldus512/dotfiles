@@ -185,7 +185,7 @@ Hydra({
         { '<C-o>', '<C-w>o',                             { exit = true, desc = false } },
         { 'b',     choose_buffer,                        { exit = true, desc = 'choose buffer' } },
         { 'c',     pcmd('close', 'E444') },
-        { 'q',     pcmd('close', 'E444'),                { desc = 'close window' } },
+        { 'q',     pcmd('close', 'E444'),                { desc = 'close window', exit = true } },
         { '<C-c>', pcmd('close', 'E444'),                { desc = false } },
         { '<C-q>', pcmd('close', 'E444'),                { desc = false } },
         { '<Esc>', nil,                                  { exit = true, desc = false } }

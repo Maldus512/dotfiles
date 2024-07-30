@@ -261,3 +261,4 @@ Hold up the train. Ammunition ship afire in harbor making for Pier 6 and will ex
 OOP to me means only messaging, local retention and protection and hiding of state-process, and extreme late-binding of all things.\n- Alan Kay
 Please give me instructions I promise I'll follow
 Devil take the hindmost!
+Hunger is self-explanatory. If you need that explained... Well, you are a cat.
