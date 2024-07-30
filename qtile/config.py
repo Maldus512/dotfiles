@@ -32,6 +32,8 @@ MARGIN = [2, 2, 4, 2]
 BORDER_COLOR = os.getenv("MAIN_THEME_COLOR")
 BORDER_COLOR_FLOATING = os.getenv("MAIN_THEME_COLOR_LIGHT")
 
+started = False
+
 
 def get_env(attr):
     try:
@@ -219,8 +221,10 @@ def move_floating_window(window, x: int = 0, y: int = 0):
 
 @ hook.subscribe.startup_once
 def autostart():
+    global started
     for cmd in get_env("AUTOSTART_LIST"):
         Popen(cmd)
+    started = True
 
 
 @ hook.subscribe.client_focus
@@ -232,26 +236,16 @@ def bring_to_front(window):
 
 
 def show_groups_grid(qtile):
-    try:
-        current_group = qtile.current_group.name
-        notify.notify(current_group, app="Group", tag="GROUP")
-    except AttributeError as e:
-        logger.warning(str(e))
-
-    current_screen = None
-    try:
-        current_screen = qtile.current_screen
-    except AttributeError as e:
-        logger.warning(str(e))
-
-    if current_screen:
-        screen_args = ["-W", str(current_screen.dwidth),
-                       "-H", str(current_screen.dheight)]
+    global started
+    if started:
+        try:
+            current_group = qtile.current_group.name
+            logger.warning(f"Notifying group {current_group}")
+            notify.notify(current_group, app="Group", tag="GROUP")
+        except AttributeError as e:
+            logger.warning(str(e))
     else:
-        screen_args = []
-
-    # logger.warning(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
-    # Popen(["qtile_show_groups.py", "-i", SCRATCHPAD, "-p", environment.ICONS_PATH] + screen_args)
+        logger.warning("Autostart list not done yet, not notifying")
 
 
 def windows_list_update():
@@ -327,7 +321,6 @@ keys = [
     Key([SUPER], "j", lazy.layout.down(), desc="Move focus down"),
     Key([SUPER], "k", lazy.layout.up(), desc="Move focus up"),
     Key([SUPER], "n", lazy.layout.down(), desc="Move focus down"),
-    Key([SUPER], "p", lazy.layout.up(), desc="Move focus up"),
     Key([SUPER], "d", lazy.layout.toggle_split()),
 
     # Move windows
@@ -359,7 +352,6 @@ keys = [
     # Group control
     #
 
-    Key([SUPER, CONTROL], "p", lazy.screen.prev_group()),
     Key([SUPER, CONTROL], "n", lazy.screen.next_group()),
     Key([SUPER, CONTROL], "m", lazy.function(show_groups_grid)),
     Key([SUPER, CONTROL], "l", switch_to_next_group_in_grid(1, 0)),
@@ -405,7 +397,6 @@ keys = [
     # Run/kill processes
     Key([SUPER], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([SUPER], "o", lazy.spawn("rofi -show file-browser -theme purple")),
-    Key([SUPER], "Return", lazy.spawn("rofi -show run -theme purple")),
     Key([SUPER], "p", lazy.spawn(
         "rofi -show windowcd -kb-row-down \"Super+s,Down\" -kb-row-up \"Super+Shift+s,Up\" -theme purple")),
     Key([SUPER, "shift"], "p", lazy.spawn(
@@ -451,9 +442,9 @@ groups = [
                [
                    DropDown("term", terminal, opacity=0.8, x=0.05, y=0.01,
                             width=.9, height=0.9, on_focus_lost_hide=False),
-                   DropDown("web", get_env("BROWSER"), x=0.025, y=0.01, width=.95,
-                            height=.98, on_focus_lost_hide=False, match=Match(wm_class="Navigator")),
-                   DropDown("notes", "leafpad /tmp/notes.md",
+                   DropDown("web", get_env("BROWSER"), x=0.025, y=0.01, width=.95, height=.98, 
+                            on_focus_lost_hide=False, match=Match(wm_class="Navigator")),
+                   DropDown("notes", "l3afpad /tmp/notes.md",
                             x=.2, y=.01, width=.6, height=.5)
                ], single=False),
     Group(NAMES[0], persist=True),
