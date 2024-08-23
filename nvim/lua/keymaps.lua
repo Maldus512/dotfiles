@@ -56,14 +56,11 @@ end)
 --[[
 --Spectre
 --]]
-vim.keymap.set('n', '<C-S-F>', '<cmd>lua require("spectre").open()<CR>', {
+vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").open()<CR>', {
     desc = "Open Spectre"
 })
-vim.keymap.set('v', '<C-S-F>', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
+vim.keymap.set('v', '<leader>S', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
     desc = "Search current word"
-})
-vim.keymap.set('n', '<C-f>', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', {
-    desc = "Search on current file"
 })
 
 --[[
@@ -84,9 +81,13 @@ vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_r
 --]]
 local builtin = require("telescope.builtin")
 vim.keymap.set({ "n", "i" }, "<C-p>", function() builtin.find_files() end)
+vim.keymap.set({ "n" }, "<leader>p", function() builtin.find_files() end)
 --map({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
 vim.keymap.set("n", "<C-/>", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
+vim.keymap.set("n", "<leader>/", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 map({ "n", "i" }, "<C-Enter>", ":Telescope commands<CR>")
+map({ "n" }, "<leader><Enter>", ":Telescope commands<CR>")
+map({ "n", "i" }, "<C-S-p>", ":Telescope commands<CR>")
 map({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
 vim.api.nvim_create_user_command("SearchAllFiles", function()
     builtin.find_files({ no_ignore = true })
@@ -94,6 +95,7 @@ end, {})
 
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 vim.keymap.set({ "s", "v" }, "<C-/>", live_grep_args_shortcuts.grep_visual_selection)
+vim.keymap.set({ "s", "v" }, "<leader>/", live_grep_args_shortcuts.grep_visual_selection)
 
 
 --[[
@@ -113,16 +115,23 @@ map("n", "<Leader>q", ":Bdelete this<CR>", { silent = true })
 map("n", "<Leader>Q", ":Bdelete! this<CR>", { silent = true })
 map("n", "<C-->", ":split<CR>")
 map("n", "<C-\\>", ":vsplit<CR>")
+map("n", "<leader>-", ":split<CR>")
+map("n", "<leader>\\", ":vsplit<CR>")
 
 -- Cycle through buffers; I don't care about flying
 map({ "n", "i" }, "<C-.>", ":BufferNext<CR>", { silent = true })
 map({ "n", "i" }, "<C-,>", ":BufferPrevious<CR>", { silent = true })
+map({ "n" }, "<leader>.", ":BufferNext<CR>", { silent = true })
+map({ "n" }, "<leader>,", ":BufferPrevious<CR>", { silent = true })
+map({ "n", "i" }, "<C-Right>", ":BufferNext<CR>", { silent = true })
+map({ "n", "i" }, "<C-Left>", ":BufferPrevious<CR>", { silent = true })
 map({ "n", "i" }, "<C-Tab>", ":BufferNext<CR>", { silent = true })
 map({ "n", "i" }, "<C-S-Tab>", ":BufferPrevious<CR>", { silent = true })
 map({ "n" }, "<leader>z", ":edit #<CR>", { silent = true })
 map({ "n", "i" }, "<c-z>", ":edit #<CR>", { silent = true })
 
 map({ "n", "i" }, "<C-;>", ":OverseerToggle right<CR>", { silent = true })
+map({ "n" }, "<leader>;", ":OverseerToggle right<CR>", { silent = true })
 
 
 --[[
