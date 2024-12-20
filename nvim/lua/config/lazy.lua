@@ -19,19 +19,19 @@ require("lazy").setup({
     "arthurxavierx/vim-unicoder",
 
     -- Package management
-    { "williamboman/mason.nvim",                           build = ":MasonUpdate" },
+    { "williamboman/mason.nvim", build = ":MasonUpdate" },
 
     -- Debuggers
     'mfussenegger/nvim-dap',
-    { "rcarriga/nvim-dap-ui",   dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
-    { "sakhnik/nvim-gdb",       build = "./install.sh" },
+    { "rcarriga/nvim-dap-ui",    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    { "sakhnik/nvim-gdb",        build = "./install.sh" },
 
     -- Colorschemes
-    { "EdenEast/nightfox.nvim", priority = 1000 },
-    { "catppuccin/nvim",        priority = 1000 },
-    { "folke/tokyonight.nvim",  priority = 1000 },
-    { "RRethy/nvim-base16",     priority = 1000 },
-    { "mcchrish/zenbones.nvim", priority = 1000,                       dependencies = "rktjmp/lush.nvim" },
+    { "EdenEast/nightfox.nvim",  priority = 1000 },
+    { "catppuccin/nvim",         priority = 1000 },
+    { "folke/tokyonight.nvim",   priority = 1000 },
+    { "RRethy/nvim-base16",      priority = 1000 },
+    { "mcchrish/zenbones.nvim",  priority = 1000,                                                    dependencies = "rktjmp/lush.nvim" },
 
     -- Ui
     "stevearc/dressing.nvim",
@@ -93,7 +93,13 @@ require("lazy").setup({
     },
     { "lukas-reineke/indent-blankline.nvim", main = "ibl", dependencies = { "nvim-treesitter/nvim-treesitter" } },
     "akinsho/toggleterm.nvim",
-    "anuvyklack/hydra.nvim",
+    "nvimtools/hydra.nvim",
     "klen/nvim-config-local",
-
+    {
+        'Bekaboo/dropbar.nvim',
+        -- optional, but required for fuzzy finder support
+        dependencies = {
+            'nvim-telescope/telescope-fzf-native.nvim'
+        }
+    }
 })

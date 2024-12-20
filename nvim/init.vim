@@ -9,6 +9,8 @@ lua require("coc_config")
 lua require("config.heirline.config")
 lua require("config.overseer")
 lua require("config.reader")
+lua require("config.lsp")
+lua require("config.dropbar")
 lua require("config")
 
 lua require("config.neodev")

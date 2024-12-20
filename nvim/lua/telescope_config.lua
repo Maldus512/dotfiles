@@ -9,5 +9,15 @@ require("telescope").setup {
     },
     sorting_strategy = "ascending",
     --- other configs
+    mappings = {
+        n = {
+            ["<C-p>"] = false,
+            ["<C-P>"] = false,
+        },
+        i = {
+            ["<C-p>"] = false,
+            ["<C-P>"] = false,
+        },
+    },
   },
 }

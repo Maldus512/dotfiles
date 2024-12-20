@@ -1,29 +1,54 @@
-local map = require("utils").map
+local escapeMap = require("utils").map
 local vim = vim
 
--- Hide search highlights by pressing Escape
-map("n", "<Esc>", ":noh<CR><Esc>", { silent = true })
+
+-- Toggleterm
+function _G.set_terminal_keymaps()
+    --local opts = {buffer = 0}
+    --vim.keymap.set('n', '<leader>h', [[<C-\><C-n>:ToggleTerm<CR>:ToggleTerm direction=horizontal size=20<CR>]], opts)
+    --vim.keymap.set('n', '<leader>v', [[<C-\><C-n>:ToggleTerm<CR>:ToggleTerm direction=vertical size=80<CR>]], opts)
+end
+
+-- if you only want these mappings for toggle term use term://*toggleterm#* instead
+vim.cmd('autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()')
 
 
+-- Movement
+vim.keymap.set("n", "<Esc>", ":noh<CR><Esc>", { silent = true }) -- Hide search highlights by pressing Escape
 vim.keymap.set({ 'n', 'i' }, '<C-o>', '<C-o>zz')
 vim.keymap.set({ 'n', 'i' }, '<C-i>', '<C-i>zz')
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")
 vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
+escapeMap({ "n", "i" }, "<C-'>", "g;zz", { silent = true })
+escapeMap({ "n", "i" }, "<C-;>", "g,zz", { silent = true })
+
+
+-- Dropbar
+do
+    local dropbar = require("dropbar.api")
+    local utils = require('dropbar.utils')
+    local selectLast = function()
+        local bar = utils.bar.get_current()
+        if true or not bar then
+            dropbar.pick()
+        else
+            local last = #(bar.components)
+            dropbar.pick(last)
+        end
+    end
+    vim.keymap.set({ "n" }, "<Leader>n", selectLast)
+    escapeMap({ "n", "i" }, "<C-n>", selectLast)
+end
+
 
 -- Reader
 vim.keymap.set({ 'n' }, '<Leader>l', ":ReadLine<CR>")
-vim.keymap.set({ 'n' }, '<Leader>n', ":ReadName<CR>")
+--vim.keymap.set({ 'n' }, '<Leader>n', ":ReadName<CR>")
 vim.keymap.set({ 'n' }, '<Leader><Leader>', ":ReadCompletion<CR>")
 
---local reader = require("reader").api
---vim.keymap.set({ "i" }, "<C-S-space>", reader.read_completion_list)
-
-
---[[
 --Debug
---]]
 local dap = require("dap")
 local dap_ui = require("dapui")
 vim.keymap.set('n', '<F4>', function() dap.terminate() end)
@@ -31,66 +56,44 @@ vim.keymap.set('n', '<F5>', function() dap.continue() end)
 vim.keymap.set('n', '<F10>', function() dap.step_over() end)
 vim.keymap.set('n', '<F11>', function() dap.step_into() end)
 vim.keymap.set('n', '<F12>', function() dap.step_out() end)
-vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
+--vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
 vim.keymap.set('n', '<Leader>B', function() dap.set_breakpoint() end)
 vim.keymap.set('n', '<Leader>D', function() dap_ui.toggle() end)
---[[
---vim.keymap.set('n', '<Leader>lp', function() dap.set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
-vim.keymap.set('n', '<Leader>dr', function() dap.repl.open() end)
-vim.keymap.set('n', '<Leader>dl', function() dap.run_last() end)
-vim.keymap.set({ 'n', 'v' }, '<Leader>dh', function()
-    require('dap.ui.widgets').hover()
-end)
-vim.keymap.set({ 'n', 'v' }, '<Leader>dp', function()
-    require('dap.ui.widgets').preview()
-end)
-vim.keymap.set('n', '<Leader>df', function()
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.frames)
-end)
-vim.keymap.set('n', '<Leader>ds', function()
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.scopes)
-end)
---]]
---[[
---Spectre
---]]
-vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").open()<CR>', {
+
+-- Spectre
+vim.keymap.set('n', '<leader>f', '<cmd>lua require("spectre").open()<CR>', {
     desc = "Open Spectre"
 })
-vim.keymap.set('v', '<leader>S', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
+vim.keymap.set('v', '<leader>f', '<esc><cmd>lua require("spectre").open_visual()<CR>', {
     desc = "Search current word"
 })
+vim.keymap.set("v", "r", "y:%s/\\V<C-r>0//gc<left><left><left>", { noremap = true })
+vim.keymap.set("v", "/", "yq/p<CR>", { noremap = true })
 
---[[
---NvimTree
---]]
-map("n", "<Leader>e", ":NvimTreeFindFileToggle<CR>", { silent = true })
+-- NvimTree
+escapeMap("n", "<Leader>e", ":NvimTreeFindFileToggle<CR>", { silent = true })
 
---[[
---Smart splits
---]]
+-- Smart splits
 vim.keymap.set({ 'n', 'i', 't' }, '<C-h>', require('smart-splits').move_cursor_left)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-j>', require('smart-splits').move_cursor_down)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-k>', require('smart-splits').move_cursor_up)
 vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_right)
 
---[[
---Telescope
---]]
-local builtin = require("telescope.builtin")
-vim.keymap.set({ "n", "i" }, "<C-p>", function() builtin.find_files() end)
-vim.keymap.set({ "n" }, "<leader>p", function() builtin.find_files() end)
---map({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
+-- Telescope
+local telescope = require("telescope.builtin")
+vim.keymap.set({ "n", "i" }, "<C-p>", function() telescope.find_files() end)
+escapeMap({ "n" }, "<leader>P", ":Telescope commands<CR>")
+escapeMap({ "n" }, "<leader><Enter>", ":Telescope commands<CR>")
+vim.keymap.set({ "n" }, "<leader>p", function() telescope.find_files() end)
+--escapeMap({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
 vim.keymap.set("n", "<C-/>", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 vim.keymap.set("n", "<leader>/", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
-map({ "n", "i" }, "<C-Enter>", ":Telescope commands<CR>")
-map({ "n" }, "<leader><Enter>", ":Telescope commands<CR>")
-map({ "n", "i" }, "<C-S-p>", ":Telescope commands<CR>")
-map({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
+escapeMap({ "n", "i" }, "<C-Enter>", ":Telescope commands<CR>")
+escapeMap({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
+escapeMap({ "n" }, "<leader>b", ":Telescope buffers<CR>")
+escapeMap({ "n", "i" }, "<C-b>", ":Telescope buffers<CR>")
 vim.api.nvim_create_user_command("SearchAllFiles", function()
-    builtin.find_files({ no_ignore = true })
+    telescope.find_files({ no_ignore = true })
 end, {})
 
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
@@ -99,43 +102,36 @@ vim.keymap.set({ "s", "v" }, "<leader>/", live_grep_args_shortcuts.grep_visual_s
 
 
 --[[
---Toggleterm
---]]
---vim.keymap.set({"t"}, "<C-x>", function() vim.cmd([[ToggleTerm]]) end)
---map({ "n", "i" }, "<C-S-x>", ":ToggleTerm direction=float<CR>", { silent = true })
---map("t", "<C-S-x>", "<C-\\><C-n>:ToggleTerm direction=float<CR>", { silent = true })
-
---[[
 --Base shortcuts
 --]]
-map("t", "`<Esc>", "<C-\\><C-n>", { silent = true })
+escapeMap("n", "`<Esc>", "<C-\\><C-n>", { silent = true })
 
---map("n", "<Leader>q", ":enew<bar>bd #<CR>", { silent = true })
-map("n", "<Leader>q", ":Bdelete this<CR>", { silent = true })
-map("n", "<Leader>Q", ":Bdelete! this<CR>", { silent = true })
-map("n", "<C-->", ":split<CR>")
-map("n", "<C-\\>", ":vsplit<CR>")
-map("n", "<leader>-", ":split<CR>")
-map("n", "<leader>\\", ":vsplit<CR>")
+--escapeMap("n", "<Leader>q", ":enew<bar>bd #<CR>", { silent = true })
+escapeMap("n", "<Leader>q", ":Bdelete this<CR>", { silent = true })
+escapeMap("n", "<Leader>Q", ":Bdelete! this<CR>", { silent = true })
+escapeMap("n", "<C-->", ":split<CR>")
+escapeMap("n", "<C-\\>", ":vsplit<CR>")
+escapeMap("n", "<leader>-", ":split<CR>")
+escapeMap("n", "<leader>\\", ":vsplit<CR>")
 
 -- Cycle through buffers; I don't care about flying
-map({ "n", "i" }, "<C-.>", ":BufferNext<CR>", { silent = true })
-map({ "n", "i" }, "<C-,>", ":BufferPrevious<CR>", { silent = true })
-map({ "n" }, "<leader>.", ":BufferNext<CR>", { silent = true })
-map({ "n" }, "<leader>,", ":BufferPrevious<CR>", { silent = true })
-map({ "n", "i" }, "<C-Right>", ":BufferNext<CR>", { silent = true })
-map({ "n", "i" }, "<C-Left>", ":BufferPrevious<CR>", { silent = true })
-map({ "n", "i" }, "<C-Tab>", ":BufferNext<CR>", { silent = true })
-map({ "n", "i" }, "<C-S-Tab>", ":BufferPrevious<CR>", { silent = true })
-map({ "n" }, "<leader>z", ":edit #<CR>", { silent = true })
-map({ "n", "i" }, "<c-z>", ":edit #<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-.>", ":BufferNext<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-,>", ":BufferPrevious<CR>", { silent = true })
+escapeMap({ "n" }, "<leader>.", ":BufferNext<CR>", { silent = true })
+escapeMap({ "n" }, "<leader>,", ":BufferPrevious<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-Right>", ":BufferNext<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-Left>", ":BufferPrevious<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-Tab>", ":BufferNext<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-S-Tab>", ":BufferPrevious<CR>", { silent = true })
+escapeMap({ "n" }, "<leader>z", ":edit #<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<c-z>", ":edit #<CR>", { silent = true })
 
-map({ "n", "i" }, "<C-;>", ":OverseerToggle right<CR>", { silent = true })
-map({ "n" }, "<leader>;", ":OverseerToggle right<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-a>", ":OverseerToggle right<CR>", { silent = true })
+escapeMap({ "n" }, "<leader>a", ":OverseerToggle right<CR>", { silent = true })
 
 
 --[[
---Coc
+-- Coc
 --]]
 -- Autocomplete
 function _G.check_back_space()
@@ -278,8 +274,8 @@ vim.keymap.set("x", "<C-s>", "<Plug>(coc-range-select)", { silent = true })
 -- Resume latest coc list
 --vim.keymap.set("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 
-map({ "n", "i" }, "<C-f>", ":Format<CR>", { silent = true })
-map({ "n", "i", "v" }, "<C-S-I>", ":Format<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-f>", ":Format<CR>", { silent = true })
+escapeMap({ "n", "i", "v" }, "<C-S-I>", ":Format<CR>", { silent = true })
 
 -- Formatting selected code
 vim.keymap.set("v", "<C-f>", "<Plug>(coc-format-selected)", { silent = true })

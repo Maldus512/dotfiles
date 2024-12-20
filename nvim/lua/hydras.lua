@@ -221,7 +221,7 @@ local debug_hydra = Hydra {
         },
     },
     mode = { 'n' },
-    body = '<leader>d',
+    body = '<leader><F5>',
     heads = {
         { 'o', dap.step_out,          { desc = 'step out' } },
         { 'n', dap.step_over,         { desc = 'step over' } },

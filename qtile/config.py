@@ -192,6 +192,14 @@ def resize_floating_window(w, width: int = 0, height: int = 0):
     w.cmd_set_size_floating(w.width + width, w.height + height)
 
 
+@lazy.window.function
+def kill_move_down(w):
+    floating = w.floating
+    w.kill()
+    if not floating:
+        qtile.current_group.next_window()
+
+
 @lazy.function
 def window_to_previous_screen(qtile, switch_group=False, switch_screen=False):
     i = qtile.screens.index(qtile.current_screen)
@@ -395,7 +403,8 @@ keys = [
     Key([SUPER], "t", lazy.spawn(terminal), desc="Launch terminal"),
 
     # Run/kill processes
-    Key([SUPER], "q", lazy.window.kill(), desc="Kill focused window"),
+    #Key([SUPER], "q", lazy.window.kill(), desc="Kill focused window"),
+    Key([SUPER], "q", kill_move_down(), desc="Kill focused window"),
     Key([SUPER], "o", lazy.spawn("rofi -show file-browser -theme purple")),
     Key([SUPER], "p", lazy.spawn(
         "rofi -show windowcd -kb-row-down \"Super+s,Down\" -kb-row-up \"Super+Shift+s,Up\" -theme purple")),

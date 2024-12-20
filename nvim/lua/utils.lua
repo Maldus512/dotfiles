@@ -32,10 +32,15 @@ function M.map(mode, lhs, rhs, opts)
     end
 
     for _, m in ipairs(mode) do
+        local newrhs = rhs
         if (m == "i") then
-            rhs = "<Esc>" .. rhs
+            if type(rhs) == "string" then
+                newrhs = "<Esc>" .. rhs
+            else
+                newrhs = function() vim.cmd.stopinsert() rhs() end
+            end
         end
-        vim.api.nvim_set_keymap(m, lhs, rhs, options)
+        vim.keymap.set(m, lhs, newrhs, options)
     end
 end
 
