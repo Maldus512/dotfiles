@@ -36,18 +36,39 @@ dap.adapters.lldb = {
 }
 
 local dapui = require("dapui")
-dap.listeners.after.event_initialized["dapui_config"] = function()
+dap.listeners.before.attach.dapui_config = function()
+    dapui.open()
     vim.hydras.debug:activate()
+end
+dap.listeners.before.launch.dapui_config = function()
+    dapui.open()
+    vim.hydras.debug:activate()
+end
+dap.listeners.before.event_terminated.dapui_config = function()
+    --dapui.close()
+    --vim.hydras.debug:exit()
+end
+dap.listeners.before.event_exited.dapui_config = function()
+    --dapui.close()
+    --vim.hydras.debug:exit()
+end
+--[[
+dap.listeners.after.event_initialized["dapui_config"] = function()
+    local dapui = require("dapui")
+    --vim.hydras.debug:activate()
     dapui.open()
 end
 dap.listeners.before.event_terminated["dapui_config"] = function()
-    vim.hydras.debug:exit()
+    local dapui = require("dapui")
+    --vim.hydras.debug:exit()
     dapui.close()
 end
 dap.listeners.before.event_exited["dapui_config"] = function()
-    vim.hydras.debug:exit()
+    local dapui = require("dapui")
+    --vim.hydras.debug:exit()
     dapui.close()
 end
+]]
 
 -- Map K to hover during debug sessions
 --[[
@@ -123,11 +144,11 @@ end
 
 local setup_openocd_configuration = function(args)
     return {
- name= "Remote attach",
+        name = "Remote attach",
         type = "codelldb",
         request = "custom",
-        targetCreateCommands= {"target create ${workspaceFolder}/" .. args.target},
-        processCreateCommands= {"gdb-remote " .. args.remoteHost .. ":" .. args.port},
+        targetCreateCommands = { "target create ${workspaceFolder}/" .. args.target },
+        processCreateCommands = { "gdb-remote " .. args.remoteHost .. ":" .. args.port },
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
     }

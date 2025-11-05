@@ -115,6 +115,8 @@ def new_group(qtile):
     qtile.dgroups.groups_map[new_name].persist = True
     qtile.current_screen.set_group(qtile.groups[-1])
 
+    return new_name
+
 
 def delete_group(qtile):
     group_to_delete = qtile.current_screen.group.name
@@ -170,6 +172,19 @@ def next_group_in_grid(qtile, horizontal_shift, vertical_shift):
     next_row = cycle(current_row + vertical_shift, 0, max_row)
     next_group = grid[next_row][next_col]["name"]
     return next_group
+
+
+def first_empty_group(qtile):
+    for group in qtile.groups:
+        if len(group.windows) == 0:
+            return group.name
+
+    return new_group(qtile) 
+
+
+@lazy.function
+def next_empty_group(qtile):
+    qtile.groups_map[first_empty_group(qtile)].cmd_toscreen()
 
 
 @lazy.function
@@ -328,7 +343,6 @@ keys = [
     Key([SUPER], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([SUPER], "j", lazy.layout.down(), desc="Move focus down"),
     Key([SUPER], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([SUPER], "n", lazy.layout.down(), desc="Move focus down"),
     Key([SUPER], "d", lazy.layout.toggle_split()),
 
     # Move windows
@@ -360,7 +374,7 @@ keys = [
     # Group control
     #
 
-    Key([SUPER, CONTROL], "n", lazy.screen.next_group()),
+    Key([SUPER, CONTROL], "n", next_empty_group()),
     Key([SUPER, CONTROL], "m", lazy.function(show_groups_grid)),
     Key([SUPER, CONTROL], "l", switch_to_next_group_in_grid(1, 0)),
     Key([SUPER, CONTROL], "h", switch_to_next_group_in_grid(-1, 0)),

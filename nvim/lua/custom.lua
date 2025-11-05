@@ -7,7 +7,12 @@ vim.cmd("command ClearSearch noh")
 
 vim.cmd("command Search lua require('spectre').open()")
 
-vim.cmd("command Debug lua require('dap').continue()")
+vim.api.nvim_create_user_command("Debug", function()
+    require('dap').continue()
+end, {})
+vim.api.nvim_create_user_command("DebugInterface", function()
+    require('dapui').toggle()
+end, {})
 
 vim.api.nvim_create_user_command("ToggleTermHorizontal", "ToggleTerm direction=horizontal", {})
 vim.api.nvim_create_user_command("ToggleTermVertical", "ToggleTerm direction=vertical", {})

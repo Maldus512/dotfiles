@@ -31,10 +31,12 @@ do
     local utils = require('dropbar.utils')
     local selectLast = function()
         local bar = utils.bar.get_current()
-        if true or not bar then
+
+        if not bar then
             dropbar.pick()
         else
             local last = #(bar.components)
+            dropbar.currently_selected = last
             dropbar.pick(last)
         end
     end
@@ -52,12 +54,15 @@ vim.keymap.set({ 'n' }, '<Leader><Leader>', ":ReadCompletion<CR>")
 local dap = require("dap")
 local dap_ui = require("dapui")
 vim.keymap.set('n', '<F4>', function() dap.terminate() end)
-vim.keymap.set('n', '<F5>', function() dap.continue() end)
+vim.keymap.set('n', '<F5>', function()
+    vim.hydras.debug:activate()
+    dap.continue()
+end)
 vim.keymap.set('n', '<F10>', function() dap.step_over() end)
 vim.keymap.set('n', '<F11>', function() dap.step_into() end)
 vim.keymap.set('n', '<F12>', function() dap.step_out() end)
---vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
-vim.keymap.set('n', '<Leader>B', function() dap.set_breakpoint() end)
+vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
+--vim.keymap.set('n', '<Leader>B', function() dap.set_breakpoint() end)
 vim.keymap.set('n', '<Leader>D', function() dap_ui.toggle() end)
 
 -- Spectre
@@ -71,7 +76,8 @@ vim.keymap.set("v", "r", "y:%s/\\V<C-r>0//gc<left><left><left>", { noremap = tru
 vim.keymap.set("v", "/", "yq/p<CR>", { noremap = true })
 
 -- NvimTree
-escapeMap("n", "<Leader>e", ":NvimTreeFindFileToggle<CR>", { silent = true })
+escapeMap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", { silent = true })
+--vim.keymap.set({"n", "i"}, "<C-e>", ":NvimTreeFindFileToggle<CR>", { silent = true })
 
 -- Smart splits
 vim.keymap.set({ 'n', 'i', 't' }, '<C-h>', require('smart-splits').move_cursor_left)
@@ -80,25 +86,29 @@ vim.keymap.set({ 'n', 'i', 't' }, '<C-k>', require('smart-splits').move_cursor_u
 vim.keymap.set({ 'n', 'i', 't' }, '<C-l>', require('smart-splits').move_cursor_right)
 
 -- Telescope
-local telescope = require("telescope.builtin")
-vim.keymap.set({ "n", "i" }, "<C-p>", function() telescope.find_files() end)
+local telescope = require("telescope")
+--vim.keymap.set({ "n", "i" }, "<C-p>", function() telescope.builtin.find_files() end)
+--vim.keymap.set({ "n" }, "<leader>p", function() telescope.builtin.find_files() end)
+vim.keymap.set({ "n", "i" }, "<C-p>", function() telescope.extensions.smart_open.smart_open { cwd_only = true } end)
+vim.keymap.set({ "n" }, "<leader>p", function() telescope.extensions.smart_open.smart_open { cwd_only = true } end)
 escapeMap({ "n" }, "<leader>P", ":Telescope commands<CR>")
 escapeMap({ "n" }, "<leader><Enter>", ":Telescope commands<CR>")
-vim.keymap.set({ "n" }, "<leader>p", function() telescope.find_files() end)
+
+--escapeMap({ "n" }, "<C-/>", ":Telescope live_grep<CR>")
 --escapeMap({ "n" }, "<leader>/", ":Telescope live_grep<CR>")
+
 vim.keymap.set("n", "<C-/>", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 vim.keymap.set("n", "<leader>/", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
+
 escapeMap({ "n", "i" }, "<C-Enter>", ":Telescope commands<CR>")
 escapeMap({ "n" }, "<leader><tab>", ":Telescope buffers<CR>")
-escapeMap({ "n" }, "<leader>b", ":Telescope buffers<CR>")
 escapeMap({ "n", "i" }, "<C-b>", ":Telescope buffers<CR>")
 vim.api.nvim_create_user_command("SearchAllFiles", function()
-    telescope.find_files({ no_ignore = true })
+    telescope.builtin.find_files({ no_ignore = true })
 end, {})
 
-local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
-vim.keymap.set({ "s", "v" }, "<C-/>", live_grep_args_shortcuts.grep_visual_selection)
-vim.keymap.set({ "s", "v" }, "<leader>/", live_grep_args_shortcuts.grep_visual_selection)
+vim.keymap.set({ "s", "v" }, "<C-/>", function() require("telescope-live-grep-args.shortcuts").grep_visual_selection() end)
+vim.keymap.set({ "s", "v" }, "<leader>/", function() require("telescope-live-grep-args.shortcuts").grep_visual_selection() end)
 
 
 --[[
@@ -171,12 +181,12 @@ vim.keymap.set("i", "<c-space>", function()
 
 -- Use `[g` and `]g` to navigate diagnostics
 -- Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-vim.keymap.set("n", "g[", "<Plug>(coc-diagnostic-prev)", { silent = true })
-vim.keymap.set("n", "g]", "<Plug>(coc-diagnostic-next)", { silent = true })
+vim.keymap.set("n", "<leader>[", "<Plug>(coc-diagnostic-prev)", { silent = true })
+vim.keymap.set("n", "<leader>]", "<Plug>(coc-diagnostic-next)", { silent = true })
 
 -- GoTo code navigation
 vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true })
-vim.keymap.set({ "n", "i" }, "<C-]>", "<Plug>(coc-definition)", { silent = true })
+vim.keymap.set({ "n" }, "<C-]>", "<Plug>(coc-definition)", { silent = true })
 vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)", { silent = true })
 vim.keymap.set("n", "gi", "<Plug>(coc-implementation)", { silent = true })
 vim.keymap.set("n", "gr", "<Plug>(coc-references)", { silent = true })

@@ -41,21 +41,15 @@ require("lazy").setup({
     "alaviss/nim.nvim",
 
     -- Development
+    "RaafatTurki/hex.nvim",
     "stevearc/overseer.nvim",
-    {
-        'neovim/nvim-lspconfig',
-        config = function()
-            require('lspconfig')['lua_ls'].setup({})
-        end,
-        ft = { 'lua' }
-    },
+    { 'neovim/nvim-lspconfig', },
     "folke/neodev.nvim",
 
     "sindrets/winshift.nvim",
     "levouh/tint.nvim",
     "lukas-reineke/virt-column.nvim",
 
-    "ziglang/zig.vim",
     "brooth/far.vim",
     { "nvim-pack/nvim-spectre",  dependencies = { "nvim-lua/plenary.nvim" } },
 
@@ -69,9 +63,27 @@ require("lazy").setup({
         tag = "0.1.3",
         -- or                            , branch = "0.1.x",
         dependencies = { "nvim-lua/plenary.nvim",
-            "nvim-telescope/telescope-live-grep-args.nvim",
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' },
+            {
+                "nvim-telescope/telescope-live-grep-args.nvim",
+                -- This will not install any breaking changes.
+                -- For major updates, this must be adjusted manually.
+                version = "^1.0.0",
+            },
         },
-        --config = function() require("telescope").load_extension("live_grep_args") end,
+        config = function() require("telescope").load_extension("live_grep_args") end,
+    },
+    {
+        "danielfalk/smart-open.nvim",
+        branch = "0.2.x",
+        config = function()
+            require("telescope").load_extension("smart_open")
+        end,
+        dependencies = {
+            "kkharji/sqlite.lua",
+            -- Only required if using match_algorithm fzf
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' },
+        },
     },
 
     -- windows and layout
@@ -91,7 +103,7 @@ require("lazy").setup({
             ts_update()
         end,
     },
-    { "lukas-reineke/indent-blankline.nvim", main = "ibl", dependencies = { "nvim-treesitter/nvim-treesitter" } },
+    { "lukas-reineke/indent-blankline.nvim",      main = "ibl",                                                                                  dependencies = { "nvim-treesitter/nvim-treesitter" } },
     "akinsho/toggleterm.nvim",
     "nvimtools/hydra.nvim",
     "klen/nvim-config-local",
@@ -99,7 +111,13 @@ require("lazy").setup({
         'Bekaboo/dropbar.nvim',
         -- optional, but required for fuzzy finder support
         dependencies = {
-            'nvim-telescope/telescope-fzf-native.nvim'
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' },
         }
-    }
+    },
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' },
+
+    {
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        version = "^1.0.0",
+    },
 })

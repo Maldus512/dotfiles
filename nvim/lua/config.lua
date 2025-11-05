@@ -32,6 +32,11 @@ vim.o.splitbelow = true
 
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = {'*.md'},
-  group = group,
-  command = 'setlocal wrap'
+  command = 'setlocal wrap spell spelllang=en_us'
+})
+
+vim.filetype.add({
+  extension = {
+    ino = "cpp",
+  },
 })

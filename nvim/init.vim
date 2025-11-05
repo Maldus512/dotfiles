@@ -11,6 +11,7 @@ lua require("config.overseer")
 lua require("config.reader")
 lua require("config.lsp")
 lua require("config.dropbar")
+lua require("config.hex")
 lua require("config")
 
 lua require("config.neodev")
@@ -30,7 +31,7 @@ lua require("dap_config")
 lua require("config.dap_ui")
 lua require("custom")
 
-lua require("hydras")
+"lua require("hydras")
 lua require("keymaps")
 
 
@@ -41,6 +42,8 @@ let g:nvimgdb_config_override = {
 
 "" Config
 set backupdir=~/.cache/nvimbackup/
+let g:filetype_pl="prolog"
+let g:filetype_v="coq"
 
 " Background colors for active vs inactive windows
 "hi ActiveWindow guibg=#181818

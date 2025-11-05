@@ -19,7 +19,6 @@ Hydra({
         foreign_keys = "run",
         invoke_on_body = true,
         hint = {
-            border = 'rounded'
         },
         on_key = function() vim.wait(50) end,
         on_enter = function()
@@ -150,7 +149,6 @@ Hydra({
     config = {
         invoke_on_body = true,
         hint = {
-            border = 'rounded',
             offset = -1
         }
     },
@@ -207,6 +205,7 @@ local debug_hint = [[
  _t_: Toggle breakpoint
  _T_: Clear breakpoints
  _K_: Inspect
+ _R_: Restart
 ]]
 local debug_hydra = Hydra {
     name = 'Debug',
@@ -221,18 +220,22 @@ local debug_hydra = Hydra {
         },
     },
     mode = { 'n' },
-    body = '<leader><F5>',
+    body = '<leader>d',
     heads = {
-        { 'o', dap.step_out,          { desc = 'step out' } },
-        { 'n', dap.step_over,         { desc = 'step over' } },
-        { 'K', dapui.eval,   { desc = "hover" } },
-        { 's', dap.step_into,         { desc = 'step into' } },
-        { 't', dap.toggle_breakpoint, { desc = 'toggle breakpoint' } },
-        { 'T', dap.clear_breakpoints, { desc = 'clear breakpoints' } },
-        { 'c', dap.continue,          { desc = 'continue' } },
-        { 'x', dap.terminate,         { desc = 'terminate', exit = true } },
-        { 'r', dap.repl.toggle,       { desc = 'open repl' } },
-        { 'q', nil,                   { exit = true, nowait = true, desc = 'exit' } },
+        { 'o', dap.step_out,                                 { desc = 'step out' } },
+        { 'n', dap.step_over,                                { desc = 'step over' } },
+        { 'K', dapui.eval,                                   { desc = "hover" } },
+        { 's', dap.step_into,                                { desc = 'step into' } },
+        { 't', dap.toggle_breakpoint,                        { desc = 'toggle breakpoint' } },
+        { 'T', dap.clear_breakpoints,                        { desc = 'clear breakpoints' } },
+        { 'c', dap.continue,                                 { desc = 'continue' } },
+        { 'x', dap.terminate,                                { desc = 'terminate', exit = true } },
+        { 'r', dap.repl.toggle,                              { desc = 'open repl' } },
+        { 'R', dap.run_last,                                 { desc = 'restart' } },
+        { 'q', function()
+            dap.terminate()
+            dapui.close()
+        end,                                                 { exit = true, nowait = true, desc = 'exit' } },
     }
 }
 

@@ -72,7 +72,7 @@ ${font1}${color2}File systems:$font$color1
  ${fs_bar 8 /}
  Data ${fs_used_perc}% - ${fs_used /home/maldus/Mount/Data}/${fs_size /home/maldus/Mount/Data}
  ${fs_bar 8 /home/maldus/Mount/Data}
- ${voffset 12}${goto 30}$font1${color2}/ ${diskio /dev/nvme0n1p2}$font$color1 ${goto 20}${voffset -12}${diskiograph /dev/nvme0n1p2 40,110 07CC0D FF0000 -t}${goto 150}${voffset 12}$font1${color2}Data ${diskio /dev/sda1}$font$color1 ${voffset -12}${goto 140}${diskiograph /dev/sda1 40,110 07CC0D FF0000 -t}
+ ${voffset 12}${goto 30}$font1${color2}/ ${diskio /dev/nvme0n1p6}$font$color1 ${goto 20}${voffset -12}${diskiograph /dev/nvme0n1p6 40,110 07CC0D FF0000 -t}${goto 150}${voffset 12}$font1${color2}Data ${diskio /dev/sda1}$font$color1 ${voffset -12}${goto 140}${diskiograph /dev/sda1 40,110 07CC0D FF0000 -t}
 $hr
 ${font1}${color2}RAM:$font$color1
  $memperc% - $mem/$memmax 
@@ -94,9 +94,9 @@ ${goto 160}Freq:${nvidia gpufreqcur}Hz
 $hr
 ${font1}${color2}Networking:
  Wifi:$font$color1
- ${downspeedgraph wlp112s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph wlp112s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed wlp112s0} ${goto 150}^$font$color1 ${upspeed wlp112s0}${voffset -8}
+ ${downspeedgraph wlp113s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph wlp113s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed wlp113s0} ${goto 150}^$font$color1 ${upspeed wlp113s0}${voffset -8}
  $font1${color2}LAN:$font$color1
- ${downspeedgraph enp109s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph enp109s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed enp109s0} ${goto 150}^ ${upspeed enp109s0}${voffset -8}
+ ${downspeedgraph enp110s0 40,110 07CC0D FF0000 -t} ${goto 140}${upspeedgraph enp110s0 40,110 07CC0D FF0000 -t} ${voffset 8}${goto 20} $font1${color2}v ${downspeed enp110s0} ${goto 150}^ ${upspeed enp110s0}${voffset -8}
 $hr
 ${font1}${color2}System monitor:
  Name           PID    CPU%   MEM%$font$color1
