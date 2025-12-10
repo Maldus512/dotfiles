@@ -284,7 +284,7 @@ vim.keymap.set("x", "<C-s>", "<Plug>(coc-range-select)", { silent = true })
 -- Resume latest coc list
 --vim.keymap.set("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 
-escapeMap({ "n", "i" }, "<C-f>", ":Format<CR>", { silent = true })
+escapeMap({ "n", "i" }, "<C-f>", "za", { silent = true })
 escapeMap({ "n", "i", "v" }, "<C-S-I>", ":Format<CR>", { silent = true })
 
 -- Formatting selected code

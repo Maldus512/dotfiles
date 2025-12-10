@@ -79,7 +79,7 @@ require("nvim-tree").setup({
     on_attach = on_attach,
     actions = {
         open_file = {
-            --resize_window = true,
+            resize_window = false,
             window_picker = {
                 enable = false,
             }

@@ -18,6 +18,10 @@ vim.api.nvim_create_user_command("ToggleTermHorizontal", "ToggleTerm direction=h
 vim.api.nvim_create_user_command("ToggleTermVertical", "ToggleTerm direction=vertical", {})
 vim.api.nvim_create_user_command("ToggleTermFloating", "ToggleTerm direction=float", {})
 
+-- Copy current file path
+vim.api.nvim_create_user_command("CopyAbsPath", "let @+ = expand('%:p')", {})
+vim.api.nvim_create_user_command("CopyPath", "let @+ = expand('%')", {})
+
 vim.api.nvim_create_user_command("CocRename", "call CocActionAsync('rename')<CR>", {})
 
 --vim.opt.titlestring = [[%{expand("%")} %h%m%r%w - %{luaeval("require('utils').current_dir_basename()")} - %{v:progname}]]
@@ -76,6 +80,15 @@ vim.api.nvim_create_autocmd({ "VimLeave" }, {
             vim.fn.system("tmux setw automatic-rename")
         end
     end
+})
+
+vim.g.markdown_folding = 1
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.foldlevel = 99
+  end,
 })
 
 --vim.cmd([[ autocmd BufEnter * if &buftype == 'terminal' | :startinsert | endif ]])

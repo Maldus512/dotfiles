@@ -250,6 +250,12 @@ def autostart():
     started = True
 
 
+@ hook.subscribe.startup
+def autostart():
+    global started
+    started = True
+
+
 @ hook.subscribe.client_focus
 def bring_to_front(window):
     windows_list_update()
@@ -471,7 +477,7 @@ groups = [
                             x=.2, y=.01, width=.6, height=.5)
                ], single=False),
     Group(NAMES[0], persist=True),
-    Group(NAMES[1], persist=False),
+    Group(NAMES[1], persist=True),
 ]
 
 
