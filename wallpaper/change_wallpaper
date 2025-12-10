@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+FONT="/usr/share/fonts/TTF/UbuntuMono-R.ttf"
+
+if [ -z "$1" ]; then
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper1.png --font $FONT
+else
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper1.png --text "$1" --font $FONT
+fi
+
+if [ -z "$2" ]; then
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper2.png --font $FONT
+else
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper2.png --text "$2" --font $FONT
+fi
+
+if [ -z "$3" ]; then
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper3.png --font $FONT
+else
+    /home/maldus/Local/bin/wallpaper -o /tmp/wallpaper3.png --text "$3" --font $FONT
+fi
+
+feh --image-bg "#14143C" --bg-max /tmp/wallpaper1.png /tmp/wallpaper2.png /tmp/wallpaper3.png
